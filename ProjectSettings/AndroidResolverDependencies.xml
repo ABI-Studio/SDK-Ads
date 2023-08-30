@@ -1,0 +1,67 @@
+<dependencies>
+  <packages>
+    <package>androidx.recyclerview:recyclerview:1.2.1</package>
+    <package>com.android.installreferrer:installreferrer:2.1</package>
+    <package>com.android.support:appcompat-v7:25.3.1</package>
+    <package>com.android.support:cardview-v7:25.3.1</package>
+    <package>com.android.support:customtabs:25.3.1</package>
+    <package>com.android.support:customtabs:28.+</package>
+    <package>com.android.support:recyclerview-v7:28.+</package>
+    <package>com.android.support:support-v4:25.3.1</package>
+    <package>com.applovin.mediation:adcolony-adapter:4.8.0.4</package>
+    <package>com.applovin.mediation:facebook-adapter:[6.15.0.0]</package>
+    <package>com.applovin.mediation:google-adapter:[22.3.0.0]</package>
+    <package>com.applovin.mediation:inmobi-adapter:10.1.4.3</package>
+    <package>com.applovin.mediation:ironsource-adapter:7.5.0.0.0</package>
+    <package>com.applovin.mediation:mintegral-adapter:16.5.11.0</package>
+    <package>com.applovin.mediation:tapjoy-adapter:13.1.2.0</package>
+    <package>com.applovin.mediation:unityads-adapter:4.8.0.0</package>
+    <package>com.applovin.mediation:yandex-adapter:5.10.0.0</package>
+    <package>com.applovin:applovin-sdk:11.11.3</package>
+    <package>com.appsflyer:af-android-sdk:6.12.2</package>
+    <package>com.appsflyer:unity-wrapper:6.12.20</package>
+    <package>com.facebook.android:facebook-applinks:[16.0,17)</package>
+    <package>com.facebook.android:facebook-core:[16.0,17)</package>
+    <package>com.facebook.android:facebook-gamingservices:[16.0,17)</package>
+    <package>com.facebook.android:facebook-login:[16.0,17)</package>
+    <package>com.facebook.android:facebook-share:[16.0,17)</package>
+    <package>com.google.android.gms:play-services-ads:22.2.0</package>
+    <package>com.google.android.gms:play-services-base:18.2.0</package>
+    <package>com.google.android.play:core-common:2.0.0</package>
+    <package>com.google.android.play:review:2.0.0</package>
+    <package>com.google.android.ump:user-messaging-platform:2.1.0</package>
+    <package>com.google.firebase:firebase-analytics:21.3.0</package>
+    <package>com.google.firebase:firebase-analytics-unity:11.4.0</package>
+    <package>com.google.firebase:firebase-app-unity:11.4.0</package>
+    <package>com.google.firebase:firebase-common:20.3.3</package>
+    <package>com.google.firebase:firebase-config:21.4.1</package>
+    <package>com.google.firebase:firebase-config-unity:11.4.0</package>
+    <package>com.parse.bolts:bolts-android:1.4.0</package>
+    <package>com.squareup.picasso:picasso:2.71828</package>
+  </packages>
+  <files>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-analytics-unity/11.4.0/firebase-analytics-unity-11.4.0.aar</file>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-analytics-unity/11.4.0/firebase-analytics-unity-11.4.0.pom</file>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-app-unity/11.4.0/firebase-app-unity-11.4.0.aar</file>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-app-unity/11.4.0/firebase-app-unity-11.4.0.pom</file>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-config-unity/11.4.0/firebase-config-unity-11.4.0.aar</file>
+    <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-config-unity/11.4.0/firebase-config-unity-11.4.0.pom</file>
+  </files>
+  <settings>
+    <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
+    <setting name="bundleId" value="com.abi.zoo.fashion" />
+    <setting name="explodeAars" value="True" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradlePropertiesTemplateEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
+    <setting name="packageDir" value="Assets/Plugins/Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useFullCustomMavenRepoPathWhenExport" value="True" />
+    <setting name="useFullCustomMavenRepoPathWhenNotExport" value="False" />
+    <setting name="useJetifier" value="True" />
+  </settings>
+</dependencies>
