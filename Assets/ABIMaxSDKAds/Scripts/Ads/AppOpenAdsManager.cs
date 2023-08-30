@@ -10,7 +10,7 @@ namespace SDK {
     [AddComponentMenu("GoogleMobileAds/Samples/AppOpenAdController")]
     public class AppOpenAdsManager : MonoBehaviour {
 #if UNITY_ANDROID
-        public string AD_UNIT_ID = "ca-app-pub-9819920607806935/3506792051";
+        public string AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
 #elif UNITY_IOS
         private string AD_UNIT_ID = "ca-app-pub-3940256099942544/5662855259";
 #else

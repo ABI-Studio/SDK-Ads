@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: b31e643ac3e4d469d9108277d79166de
+guid: e11a5d5e582aa4b098ab4a5bd733152a
 labels:
 - al_max
-- al_max_export_path-MaxSdk/Mediation/InMobi
+- al_max_export_path-MaxSdk/Mediation/ByteDance
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

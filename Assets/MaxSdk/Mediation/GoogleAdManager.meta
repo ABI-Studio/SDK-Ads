@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: a62ec08926a464aadbe46d495308c70e
+guid: 96f91abf309684b788df942741bf2f28
 labels:
 - al_max
-- al_max_export_path-MaxSdk/Mediation/Smaato
+- al_max_export_path-MaxSdk/Mediation/GoogleAdManager
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
