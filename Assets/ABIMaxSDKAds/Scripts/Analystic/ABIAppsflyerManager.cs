@@ -18,6 +18,7 @@ namespace SDK
             }
             DontDestroyOnLoad(gameObject);
             instance = this;
+            AppsFlyerAdRevenue.start(AppsFlyerAdRevenueType.Generic);
         }
 
         public static void SendEvent(string eventName, Dictionary<string, string> pairs)
@@ -63,10 +64,7 @@ namespace SDK
 
         public const string af_rewarded_show_count = "af_rewarded_show_count_";
         
-
         public const string af_level_achieved = "af_level_achieved";
-
-        
 
         /// <summary>
         /// 
@@ -103,7 +101,7 @@ namespace SDK
         {
             SendEvent(af_rewarded_displayed);
         }
-        public void TrackRewarded_ShowCount(int total) {
+        public static void TrackRewarded_ShowCount(int total) {
             if (total == 0) return;
             bool isTracking = total % 5 == 0;
 
@@ -111,7 +109,7 @@ namespace SDK
             string eventName = af_rewarded_show_count + total;
             SendEvent(eventName);
         }
-        public void TrackAppflyerPurchase(string purchaseId, decimal cost, string currency) {
+        public static void TrackAppflyerPurchase(string purchaseId, decimal cost, string currency) {
             float fCost = (float)cost;
             fCost *= 0.63f;
             Dictionary<string, string> eventValue = new Dictionary<string, string>();
@@ -119,6 +117,23 @@ namespace SDK
             eventValue.Add(AFInAppEvents.CURRENCY, currency);
             eventValue.Add(AFInAppEvents.QUANTITY, "1");
             AppsFlyer.sendEvent(AFInAppEvents.PURCHASE, eventValue);
+        }
+
+        public static void TrackAppsflyerAdRevenue(ImpressionData impressionData)
+        {
+            Dictionary<string,string> eventValue = new Dictionary<string, string>();
+            eventValue.Add("ad_platform","applovin");
+            eventValue.Add("ad_source", impressionData.ad_source);
+            eventValue.Add("ad_unit_name", impressionData.ad_unit_name);
+            eventValue.Add("ad_format", impressionData.ad_format);
+            eventValue.Add("placement","");
+            eventValue.Add("value", impressionData.ad_revenue.ToString());
+            eventValue.Add("currency", "USD");
+            AppsFlyerAdRevenue.logAdRevenue(impressionData.ad_source, 
+                AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeApplovinMax,
+                impressionData.ad_revenue,
+                "USD",
+                eventValue);
         }
         #endregion
 

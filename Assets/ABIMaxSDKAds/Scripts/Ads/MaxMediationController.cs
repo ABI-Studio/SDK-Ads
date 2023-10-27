@@ -7,22 +7,12 @@ using UnityEngine.Events;
 namespace SDK {
     public class MaxMediationController : AdsMediationController {
 #if UNITY_AD_MAX
-        public string m_MaxSdkKey = "";
-
-        private string m_ApplicationKey;
         private bool m_IsWatchSuccess = false;
-
-        public string m_RewardAdUnitID;
-        public string m_InterstitialAdUnitID;
-        public string m_BannerAdUnitID;
+        public MaxAdSetup m_MaxAdConfig;
 
         private void Awake() {
         }
         private void Start() {
-
-#if UNITY_ANDROID
-            m_ApplicationKey = m_MaxSdkKey;
-#endif
             Debug.Log("unity-script: MyAppStart Start called");
 
             MaxSdkCallbacks.OnSdkInitializedEvent += sdkConfiguration => {
@@ -30,7 +20,7 @@ namespace SDK {
                 Debug.Log("MAX SDK Initialized");
                 AdsManager.Instance.UpdateAdsMediation();
             };
-            MaxSdk.SetSdkKey(m_MaxSdkKey);
+            MaxSdk.SetSdkKey(m_MaxAdConfig.sdkKey);
             MaxSdk.InitializeSdk();
             //ShowBannerAds();
         }
@@ -44,7 +34,8 @@ namespace SDK {
                 ad_revenue = revenue,
                 ad_currency = "USD"
             };
-            ABIAnalyticsManager.Instance.TrackAdImpression(impression);
+            ABIAnalyticsManager.TrackAdImpression(impression);
+            ABIAppsflyerManager.TrackAppsflyerAdRevenue(impression);
         }
         #region Interstitial
         public override void InitInterstitialAd(UnityAction adClosedCallback, UnityAction adLoadSuccessCallback, UnityAction adLoadFailedCallback, UnityAction adShowSuccessCallback, UnityAction adShowFailCallback) {
@@ -63,15 +54,15 @@ namespace SDK {
         public override void RequestInterstitialAd() {
             base.RequestInterstitialAd();
             Debug.Log("Request MAX Interstitial");
-            MaxSdk.LoadInterstitial(m_InterstitialAdUnitID);
+            MaxSdk.LoadInterstitial(m_MaxAdConfig.interstitialAdUnitID);
         }
         public override void ShowInterstitialAd() {
             base.ShowInterstitialAd();
             Debug.Log("Show MAX Interstitial");
-            MaxSdk.ShowInterstitial(m_InterstitialAdUnitID);
+            MaxSdk.ShowInterstitial(m_MaxAdConfig.interstitialAdUnitID);
         }
         public override bool IsInterstitialLoaded() {
-            return MaxSdk.IsInterstitialReady(m_InterstitialAdUnitID);
+            return MaxSdk.IsInterstitialReady(m_MaxAdConfig.interstitialAdUnitID);
         }
         void OnInterstitialLoadedEvent(string adUnitId, MaxSdkBase.AdInfo adInfo) {
             Debug.Log("Load MAX Interstitial Success");
@@ -128,7 +119,7 @@ namespace SDK {
 #if UNITY_EDITOR
             Rewarded_OnAdLoadedFailEvent("", null);
 #else
-        MaxSdk.LoadRewardedAd(m_RewardAdUnitID);
+            MaxSdk.LoadRewardedAd(m_MaxAdConfig.rewardedAdUnitID);
 #endif
         }
         public override void ShowRewardVideoAd(UnityAction successCallback, UnityAction failedCallback) {
@@ -138,14 +129,14 @@ namespace SDK {
             Rewarded_OnAdRewardedEvent("", new MaxSdkBase.Reward(), null);
 #else
         m_IsWatchSuccess = false;
-        MaxSdk.ShowRewardedAd(m_RewardAdUnitID);
+        MaxSdk.ShowRewardedAd(m_MaxAdConfig.rewardedAdUnitID);
 #endif
         }
         public override bool IsRewardVideoLoaded() {
 #if UNITY_EDITOR
             return false;
 #else
-        return MaxSdk.IsRewardedAdReady(m_RewardAdUnitID);
+        return MaxSdk.IsRewardedAdReady(m_MaxAdConfig.rewardedAdUnitID);
 #endif
         }
 
@@ -216,14 +207,14 @@ namespace SDK {
         public override void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback) {
             base.InitBannerAds(bannerLoadedSuccessCallback, bannerAdLoadedFailCallback);
             Debug.Log("Banner MAX Init");
-            MaxSdk.CreateBanner(m_BannerAdUnitID, MaxSdkBase.BannerPosition.BottomCenter);
-            MaxSdk.SetBannerBackgroundColor(m_BannerAdUnitID, Color.black);
+            MaxSdk.CreateBanner(m_MaxAdConfig.bannerAdUnitID, MaxSdkBase.BannerPosition.BottomCenter);
+            MaxSdk.SetBannerBackgroundColor(m_MaxAdConfig.bannerAdUnitID, Color.black);
             MaxSdkCallbacks.Banner.OnAdLoadedEvent += BannerAdLoadedEvent;
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
         public override void ShowBannerAds() {
             base.ShowBannerAds();
-            MaxSdk.ShowBanner(m_BannerAdUnitID);
+            MaxSdk.ShowBanner(m_MaxAdConfig.bannerAdUnitID);
         }
         void BannerAdLoadedEvent(string adUnitID, MaxSdkBase.AdInfo adInfo) {
             Debug.Log("unity-script: I got BannerAdLoadedEvent");

@@ -30,7 +30,7 @@ namespace SDK {
         public const string ad_inters_show_count = "ad_inters_show_count_";
         public const string ad_rewarded_show_count = "ad_rewarded_show_count_";
 
-        public void TrackAdImpression(ImpressionData impressionData) {
+        public static void TrackAdImpression(ImpressionData impressionData) {
             double revenue = impressionData.ad_revenue;
             var impressionParameters = new[] {
                 new Parameter("ad_platform", impressionData.ad_platform),
@@ -48,7 +48,7 @@ namespace SDK {
             });
 
         }
-        public void TrackLocalAdImpression(string adFormat, ImpressionData impressionData) {
+        public static void TrackLocalAdImpression(string adFormat, ImpressionData impressionData) {
             List<int> trackPoints = new List<int> { 5, 15, 30, 50, 100 };
             switch (adFormat) {
                 case "REWARDED": {
@@ -70,7 +70,7 @@ namespace SDK {
                             new Parameter("revenue_inters", totalRevenue)
                         };
                         ABIFirebaseManager.Instance.LogFirebaseEvent(eventName, parameters);
-                        ABIAppsflyerManager.Instance.TrackRewarded_ShowCount(totalWatched);
+                        ABIAppsflyerManager.TrackRewarded_ShowCount(totalWatched);
                     }
                     break;
                 case "INTER": {

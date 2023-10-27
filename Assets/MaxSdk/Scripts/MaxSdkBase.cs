@@ -521,6 +521,7 @@ public abstract class MaxSdkBase
 
             var eventName = MaxSdkUtils.GetStringFromDictionary(eventProps, "name", "");
             MaxSdkLogger.UserError("Unable to notify ad delegate due to an error in the publisher callback '" + eventName + "' due to exception: " + exception.Message);
+            Debug.LogException(exception);
         }
     }
 

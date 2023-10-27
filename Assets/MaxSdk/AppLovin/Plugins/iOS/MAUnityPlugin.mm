@@ -75,11 +75,29 @@ extern "C"
         
         return array;
     }
-
-
+    
+    void setPendingExtraParametersIfNeeded(ALSdkSettings *settings)
+    {
+        NSDictionary *extraParameters;
+        @synchronized ( _extraParametersToSetLock )
+        {
+            if ( _extraParametersToSet.count <= 0 ) return;
+            
+            extraParameters = [NSDictionary dictionaryWithDictionary: _extraParametersToSet];
+            [_extraParametersToSet removeAllObjects];
+        }
+        
+        for ( NSString *key in extraParameters.allKeys )
+        {
+            [settings setExtraParameterForKey: key value: extraParameters[key]];
+        }
+    }
+    
     ALSdkSettings * generateSDKSettings(const char *serializedAdUnitIdentifiers, const char *serializedMetaData)
     {
         ALSdkSettings *settings = [[ALSdkSettings alloc] init];
+        
+        setPendingExtraParametersIfNeeded( settings );
         
         if ( _testDeviceIdentifiersToSet )
         {
@@ -161,24 +179,6 @@ extern "C"
         return ALAdContentRatingNone;
     }
     
-    void setPendingExtraParametersIfNeeded(ALSdkSettings *settings)
-    {
-        NSDictionary *extraParameters;
-        @synchronized ( _extraParametersToSetLock )
-        {
-            if ( _extraParametersToSet.count <= 0 ) return;
-            
-            extraParameters = [NSDictionary dictionaryWithDictionary: _extraParametersToSet];
-            [_extraParametersToSet removeAllObjects];
-        }
-        
-        for ( NSString *key in extraParameters.allKeys )
-        {
-            [settings setExtraParameterForKey: key value: extraParameters[key]];
-        }
-    }
-    
-    
     void _MaxSetSdkKey(const char *sdkKey)
     {
         maybeInitializePlugin();
@@ -255,8 +255,6 @@ extern "C"
             _sdk.targetingData.interests = _targetingInterests;
             _targetingInterests = nil;
         }
-        
-        setPendingExtraParametersIfNeeded( _sdk.settings );
     }
     
     bool _MaxIsInitialized()

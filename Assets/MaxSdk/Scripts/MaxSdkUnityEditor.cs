@@ -313,6 +313,12 @@ public class MaxSdkUnityEditor : MaxSdkBase
         {
             CreateStubBanner(adUnitIdentifier, bannerPosition);
         }
+
+        ExecuteWithDelay(1f, () =>
+        {
+            var eventProps = Json.Serialize(CreateBaseEventPropsDictionary("OnBannerAdLoadedEvent", adUnitIdentifier));
+            MaxSdkCallbacks.Instance.ForwardEvent(eventProps);
+        });
     }
 
     /// <summary>
@@ -558,6 +564,12 @@ public class MaxSdkUnityEditor : MaxSdkBase
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "create MREC");
         RequestAdUnit(adUnitIdentifier);
+
+        ExecuteWithDelay(1f, () =>
+        {
+            var eventProps = Json.Serialize(CreateBaseEventPropsDictionary("OnMRecAdLoadedEvent", adUnitIdentifier));
+            MaxSdkCallbacks.Instance.ForwardEvent(eventProps);
+        });
     }
 
     /// <summary>
