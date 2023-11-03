@@ -2,7 +2,7 @@ fileFormatVersion: 2
 guid: cb0d255b8cd434556a80e3ae50b24b9c
 labels:
 - gvh
-- gvh_version-8.5.2
+- gvh_version-8.5.3
 - gvhp_exportpath-GoogleMobileAds/Editor/Resources/DummyAds/AdImages/AdInspectorHome.png
 - gvhp_exportpath-GoogleMobileAds/Editor/Resources/Ump/ConsentForm.png
 TextureImporter:
@@ -107,7 +107,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: Server
+    buildTarget: iPhone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -119,7 +119,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: iPhone
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1

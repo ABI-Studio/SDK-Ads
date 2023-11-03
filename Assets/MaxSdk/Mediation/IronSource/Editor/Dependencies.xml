@@ -8,6 +8,6 @@
         </androidPackage>
     </androidPackages>
     <iosPods>
-        <iosPod name="AppLovinMediationIronSourceAdapter" version="7.5.0.0.0" />
+        <iosPod name="AppLovinMediationIronSourceAdapter" version="7.5.1.0.0" />
     </iosPods>
 </dependencies>

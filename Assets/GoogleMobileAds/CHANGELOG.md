@@ -1,11 +1,26 @@
 Google Mobile Ads Unity Plugin Change Log
 
 **************
+Version 8.5.3
+**************
+
+- Fixed "cannot find symbol" error when building the Android bridge project using gradle.
+- Fixed [#2930] by pinning the Google Mobile Ads SDK dependency to use v22.3.0 on Android.
+- Fixed [#2974] ConsentInformation.Update() wasn't working as expected on consecutive requests.
+
+Built and tested with:
+- Google Mobile Ads Android SDK 22.3.0
+- Google Mobile Ads iOS SDK 10.9
+- Google User Messaging Platform 2.1.0
+- External Dependency Manager for Unity 1.2.176
+
+**************
 Version 8.5.2
 **************
 
 - Fixed AndroidJavaException when using AdManagerAdRequest custom targeting.
 - Fixed [#2826] "No such proxy method" error within GoogleMobileAds.Ump.
+- Updated Google Mobile Ads SDK dependency to use v22.3.0 on Android.
 
 Built and tested with:
 - Google Mobile Ads Android SDK 22.3.0
