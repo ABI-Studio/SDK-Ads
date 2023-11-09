@@ -33,7 +33,6 @@ namespace SDK
         private const string MAX_MEDIATION_SYMBOL = "UNITY_AD_MAX";
         private const string IRONSOURCE_MEDIATION_SYMBOL = "UNITY_AD_IRONSOURCE";
             
-        [MenuItem("SDK Setup/Active Ad Max Mediation")]
         private static void ActiveAdMaxMediation()
         {
             string defineSymbol = MAX_MEDIATION_SYMBOL; 
@@ -51,7 +50,6 @@ namespace SDK
                     currentDefineSymbols);
             }
         }
-        [MenuItem("SDK Setup/Active Ad Ironsource Mediation")]
         private static void ActiveAdIronsourceMediation()
         {
             string defineSymbol = IRONSOURCE_MEDIATION_SYMBOL; 
@@ -70,11 +68,11 @@ namespace SDK
             }
         }
         
-        [MenuItem("SDK Setup/Setup Max Ads")]
+        [MenuItem("SDK Setup/Setup Ads")]
         static void OpenMaxAdConfig()
         {
-            string assetPath = "Assets/ABIMaxSDKAds/Scripts/ScriptableObjects/MaxAdSetup.asset";
-            MaxAdSetup selectedScriptableObject = AssetDatabase.LoadAssetAtPath<MaxAdSetup>(assetPath);
+            string assetPath = "Assets/ABIMaxSDKAds/Scripts/ScriptableObjects/SDKAdsSetup.asset";
+            SDKSetup selectedScriptableObject = AssetDatabase.LoadAssetAtPath<SDKSetup>(assetPath);
             Selection.activeObject = selectedScriptableObject;
             EditorGUIUtility.PingObject(selectedScriptableObject);
         }

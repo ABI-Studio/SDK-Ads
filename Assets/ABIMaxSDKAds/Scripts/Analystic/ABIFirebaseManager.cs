@@ -7,7 +7,6 @@ using UnityEngine.Events;
 namespace SDK {
     [ScriptOrder(-10)]
     public class ABIFirebaseManager : MonoBehaviour {
-        private bool m_IsLoaded = false;
         public FirebaseAnalyticsManager m_FirebaseAnalyticsManager;
         public FirebaseRemoteConfigManager m_FirebaseRemoteConfigManager;
 
@@ -41,7 +40,7 @@ namespace SDK {
         }
         private async void InitializeFirebase() {
             await m_FirebaseRemoteConfigManager.InitRemoteConfig();
-            m_IsLoaded = true;
+            IsFirebaseReady = true;
             OnFetchSuccess();
             if (m_FirebaseInitedSuccessCallback != null) {
                 m_FirebaseInitedSuccessCallback();
@@ -51,13 +50,9 @@ namespace SDK {
             Debug.Log("Fetch Success");
             Debug.Log("---------------------Update All RemoteConfigs----------------------");
             EventManager.AddEventNextFrame(() => EventManager.TriggerEvent("UpdateRemoteConfigs"));
-            EventManager.AddEventNextFrame(() => EventManager.TriggerEvent("ShowAdsFirstTime"));
         }
-        public bool IsFirebaseReady {
-            get {
-                return m_IsLoaded;
-            }
-        }
+        public bool IsFirebaseReady { get; private set; } = false;
+
         public void LogFirebaseEvent(string eventName, string eventParamete, double eventValue) {
             if (IsFirebaseReady) {
                 m_FirebaseAnalyticsManager.LogEvent(eventName, eventParamete, eventValue);

@@ -4,6 +4,6 @@
         <androidPackage spec="com.applovin.mediation:yandex-adapter:6.1.0.0" />
     </androidPackages>
     <iosPods>
-        <iosPod name="AppLovinMediationYandexAdapter" version="6.1.0.0" />
+        <iosPod name="AppLovinMediationYandexAdapter" version="6.1.0.1" />
     </iosPods>
 </dependencies>

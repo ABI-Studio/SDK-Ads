@@ -16,11 +16,6 @@ namespace SDK {
 #else
         private string  AD_UNIT_ID = "unexpected_platform";
 #endif
-        public static string key_remote_aoa_active = "remote_aoa_active";
-        public static string key_remote_aoa_time_between_step = "remote_aoa_load_time";
-        public static string key_remote_aoa_pause_time_need_to_show_ads = "remote_aoa_pause_time";
-        public static string key_remote_aoa_show_first_time_active = "remote_aoa_show_first_time_active";
-        //public static string key_ads_show_first_time = "key_ads_show_first_time";
         private AppOpenAd m_Ad;
 
         public bool m_IsActiveByInspector;
@@ -87,25 +82,25 @@ namespace SDK {
         private void UpdateRemoteConfigs() {
             Debug.Log("Update RemoteConfig");
             {
-                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(key_remote_aoa_active);
+                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(ABI.Keys.key_remote_aoa_active);
                 m_IsActiveByRemoteConfig = configValue.BooleanValue;
                 Debug.Log("AOA active = " + m_IsActiveByRemoteConfig);
             }
 
             {
-                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(key_remote_aoa_show_first_time_active);
+                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(ABI.Keys.key_remote_aoa_show_first_time_active);
                 m_IsActiveShowAdsFirstTime = configValue.BooleanValue;
                 Debug.Log("AOA active show first time = " + m_IsActiveShowAdsFirstTime);
             }
 
             {
-                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(key_remote_aoa_time_between_step);
+                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(ABI.Keys.key_remote_aoa_time_between_step_load);
                 m_AoaTimeBetweenStep = configValue.DoubleValue;
                 Debug.Log("AOA Load time = " + m_AoaTimeBetweenStep);
             }
 
             {
-                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(key_remote_aoa_pause_time_need_to_show_ads);
+                ConfigValue configValue = ABIFirebaseManager.Instance.GetConfigValue(ABI.Keys.key_remote_aoa_pause_time_need_to_show_ads);
                 m_AoaPauseTimeNeedToShowAds = configValue.DoubleValue;
                 Debug.Log("AOA Pause time = " + m_AoaPauseTimeNeedToShowAds);
             }
@@ -115,7 +110,8 @@ namespace SDK {
         #endregion
 
         #region Command
-        public void LoadAd() {
+
+        private void LoadAd() {
             if (m_Ad != null) {
                 m_Ad.Destroy();
                 m_Ad = null;
@@ -141,14 +137,15 @@ namespace SDK {
 
             }));
         }
-        public void ShowAdIfAvailable() {
+
+        private void ShowAdIfAvailable() {
             if (m_Ad == null || !m_Ad.CanShowAd()) return;
             if (!IsAdAvailable || m_IsShowingAd || !m_IsActiveByInspector || !m_IsActiveByRemoteConfig || !m_IsActiveByOtherSource) return;
             Debug.Log("Call show AppOpenAds");
             ShowAds();
         }
 
-        public void ShowAds() {
+        private void ShowAds() {
             m_Ad.Show();
         }
         private void RegisterEventHandlers(AppOpenAd ad) {
@@ -171,15 +168,16 @@ namespace SDK {
                 m_IsDoneShowAdsFirstTime = true;
                 Debug.Log("Show App Open Ads First Time");
             }
-
         }
-        public void SetActiveByOtherSource(bool value, float time) {
+
+        private void SetActiveByOtherSource(bool value, float time) {
             if (m_IgnoreShowAds != null) {
                 StopCoroutine(m_IgnoreShowAds);
             }
             m_IgnoreShowAds = StartCoroutine(CoSetActiveByOtherSource(value, time));
         }
-        IEnumerator CoSetActiveByOtherSource(bool value, float time) {
+
+        private IEnumerator CoSetActiveByOtherSource(bool value, float time) {
             yield return new WaitForSeconds(time);
             m_IsActiveByOtherSource = value;
         }
@@ -237,11 +235,14 @@ namespace SDK {
         }
         public void OnApplicationPause(bool paused) {
             if (!m_IsActiveByRemoteConfig || !m_IsActiveByInspector || !m_IsActiveByOtherSource) return;
-            if (paused) {
-                m_StartPauseTime = DateTime.UtcNow;
-            }
-            if (!paused && (DateTime.Now - m_StartPauseTime).TotalSeconds > m_AoaPauseTimeNeedToShowAds) {
-                ShowAdIfAvailable();
+            switch (paused)
+            {
+                case true:
+                    m_StartPauseTime = DateTime.UtcNow;
+                    break;
+                case false when (DateTime.Now - m_StartPauseTime).TotalSeconds > m_AoaPauseTimeNeedToShowAds:
+                    ShowAdIfAvailable();
+                    break;
             }
         } 
         #endregion

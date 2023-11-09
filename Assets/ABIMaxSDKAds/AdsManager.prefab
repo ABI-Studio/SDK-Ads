@@ -48,27 +48,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsCheatAds: 0
+  m_SDKSetup: {fileID: 0}
   m_RewardVideoAdsConfig:
     adsType: 2
     adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
-    adsMediations:
-    - {fileID: 4438890547479628587}
+    adsMediations: []
   m_InterstitialAdsConfig:
     adsType: 1
     adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
-    adsMediations:
-    - {fileID: 4438890547479628587}
+    adsMediations: []
   m_BannerAdsConfig:
     adsType: 0
     adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
-    adsMediations:
-    - {fileID: 4438890547479628587}
+    adsMediations: []
+  m_MRecAdsConfig:
+    adsType: 0
+    adsMediationType: 1
+    isActive: 1
+    maxReloadTime: 3
+    adsMediations: []
+  m_AppOpenAdsConfig:
+    adsType: 0
+    adsMediationType: 1
+    isActive: 1
+    maxReloadTime: 3
+    adsMediations: []
+  m_AdsMediationControllers:
+  - {fileID: 2822602355967738161}
+  - {fileID: 5196014125470475834}
+  - {fileID: 4438890547479628587}
 --- !u!1 &2822602355967738163
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,8 +127,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d279ebb97674449a785d32e0eee1db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IsActive: 1
+  m_IsActive: 0
   IsInited: 0
+  m_MaxAdConfig:
+    sdkKey:
+      AndroidID: 
+    interstitialAdUnitID:
+      AndroidID: 
+    rewardedAdUnitID:
+      AndroidID: 
+    bannerAdUnitID:
+      AndroidID: 
+    mrecAdUnitID:
+      AndroidID: 
+    appOpenAdUnitID:
+      AndroidID: 
 --- !u!1 &3518085839382689767
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,15 +186,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa6ee2423b1e2b4ca9dd7f1e9205027, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IsActive: 1
+  m_IsActive: 0
   IsInited: 0
   m_AndroidAdmobID_AppId: 
-  m_AdmobID_Intertitials:
-    ids: []
-  m_AdmobID_RewardVideo:
-    ids: []
-  m_AdmobID_Banner:
-    ids: []
+  m_AdmobAdSetup:
+    interstitialAdUnitID:
+      AndroidID: []
+    rewardedAdUnitID:
+      AndroidID: []
+    bannerAdUnitID:
+      AndroidID: []
+    mrecAdUnitID:
+      AndroidID: []
+    appOpenAdUnitID:
+      AndroidID: []
+  m_BannerPosition: 0
 --- !u!1 &8353138578966223628
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,5 +247,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsActive: 0
   IsInited: 0
-  Android_Key: 
-  IOS_Key: 

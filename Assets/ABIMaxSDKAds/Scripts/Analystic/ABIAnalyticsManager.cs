@@ -172,5 +172,6 @@ namespace SDK {
         public string ad_format;
         public double ad_revenue;
         public string ad_currency;
+        public AdsType ad_type;
     }
 }

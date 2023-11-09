@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dependencies>
     <androidPackages>
-        <androidPackage spec="com.applovin.mediation:unityads-adapter:4.9.1.0" />
+        <androidPackage spec="com.applovin.mediation:unityads-adapter:4.9.2.0" />
     </androidPackages>
     <iosPods>
         <iosPod name="AppLovinMediationUnityAdsAdapter" version="4.9.1.0" />

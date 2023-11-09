@@ -9,6 +9,6 @@
         <androidPackage spec="androidx.recyclerview:recyclerview:1.2.1" />
     </androidPackages>
     <iosPods>
-        <iosPod name="AppLovinMediationMintegralAdapter" version="7.4.7.0.0" />
+        <iosPod name="AppLovinMediationMintegralAdapter" version="7.4.9.0.0" />
     </iosPods>
 </dependencies>

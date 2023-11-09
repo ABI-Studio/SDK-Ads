@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "593837184558",
-    "project_id": "zoo-fashion",
-    "storage_bucket": "zoo-fashion.appspot.com"
+    "project_number": "1043898787308",
+    "project_id": "click-to-revive-man",
+    "storage_bucket": "click-to-revive-man.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:593837184558:android:a6f8764cc83cddf6a871bf",
+        "mobilesdk_app_id": "1:1043898787308:android:ada2c22f50145ef7c80cc9",
         "android_client_info": {
-          "package_name": "com.abi.zoo.fashion"
+          "package_name": "com.abi.revive.man"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "593837184558-6q0cecgq74a1er7b4recjnvsfgirosl3.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC0Dny_pw6PVUIwOrPqS2YDJ5wD0PxyRLE"
+          "current_key": "AIzaSyCG72YGC4b8sLD12HXDdsPqze_BQee_xXY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "593837184558-6q0cecgq74a1er7b4recjnvsfgirosl3.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

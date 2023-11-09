@@ -14,11 +14,11 @@ namespace SDK
             Dictionary<string, object> defaults =
                     new Dictionary<string, object>();
 
-            defaults.Add(ABI.Keys.key_remote_aoa_active, false);
-            defaults.Add(ABI.Keys.key_remote_aoa_time_between_step, 60);
-            defaults.Add(ABI.Keys.key_remote_aoa_show_first_time_active, false);
-            defaults.Add(ABI.Keys.key_remote_aoa_pause_time_need_to_show_ads, 60);
-            defaults.Add(ABI.Keys.key_remote_interstital_rate_time, 300);
+            defaults.Add(ABI.Keys.key_remote_aoa_active, true);
+            defaults.Add(ABI.Keys.key_remote_aoa_time_between_step_load, 10);
+            defaults.Add(ABI.Keys.key_remote_aoa_show_first_time_active, true);
+            defaults.Add(ABI.Keys.key_remote_aoa_pause_time_need_to_show_ads, 5);
+            defaults.Add(ABI.Keys.key_remote_interstital_rate_time, 30);
             defaults.Add(ABI.Keys.key_remote_room_pirce_w1, "");
             defaults.Add(ABI.Keys.key_remote_room_pirce_w2, "");
             defaults.Add(ABI.Keys.key_remote_room_vip_pirce_w2, "");

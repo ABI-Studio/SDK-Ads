@@ -5,6 +5,6 @@
         <androidPackage spec="com.applovin.mediation:google-ad-manager-adapter:[22.5.0.0]" />
     </androidPackages>
     <iosPods>
-        <iosPod name="AppLovinMediationGoogleAdManagerAdapter" version="10.12.0.0" />
+        <iosPod name="AppLovinMediationGoogleAdManagerAdapter" version="10.13.0.0" />
     </iosPods>
 </dependencies>
