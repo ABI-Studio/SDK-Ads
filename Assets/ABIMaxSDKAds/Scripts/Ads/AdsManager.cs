@@ -43,6 +43,8 @@ namespace SDK {
         private int m_MaxRewardInterruptCount = 6;
         private bool m_IsActiveInterruptReward = false;
         private bool m_IsUpdateRemoteConfigSuccess = false;
+        
+        public AdsMediationType m_MainAdsMediationType = AdsMediationType.MAX;
 
         public AdsConfig m_RewardVideoAdsConfig;
         public AdsConfig m_InterstitialAdsConfig;
@@ -152,6 +154,12 @@ namespace SDK {
 
         public void UpdateAdsMediationConfig()
         {
+            m_MainAdsMediationType = m_SDKSetup.adsMediationType;
+            m_RewardVideoAdsConfig.adsMediationType = m_SDKSetup.rewardedAdsMediationType;
+            m_InterstitialAdsConfig.adsMediationType = m_SDKSetup.interstitialAdsMediationType;
+            m_BannerAdsConfig.adsMediationType = m_SDKSetup.bannerAdsMediationType;
+            m_MRecAdsConfig.adsMediationType = m_SDKSetup.mrecAdsMediationType;
+            m_AppOpenAdsConfig.adsMediationType = m_SDKSetup.appOpenAdsMediationType;
             UpdateMaxMediation();
             UpdateAdmobMediation();
         }
@@ -197,6 +205,7 @@ namespace SDK {
             if (admobMediationController == null) return;
             if (m_SDKSetup.interstitialAdsMediationType == AdsMediationType.ADMOB)
             {
+                m_MainAdsMediationType = AdsMediationType.ADMOB;
                 admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList =
                     m_SDKSetup.admobAdsSetup.InterstitialAdUnitIDList;
             }
@@ -704,7 +713,9 @@ namespace SDK {
         private void OnAdRevenuePaidEvent(ImpressionData impressionData) {
             Debug.Log("Paid Ad Revenue - Ads Type = " + impressionData.ad_type);
             ABIAnalyticsManager.TrackAdImpression(impressionData);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackAppsflyerAdRevenue(impressionData);
+#endif
         }
         public AdsMediationController GetSelectedMediation(AdsType adsType)
         {

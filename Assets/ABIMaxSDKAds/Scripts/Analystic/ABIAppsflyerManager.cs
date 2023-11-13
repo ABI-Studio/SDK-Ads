@@ -4,6 +4,7 @@ using UnityEngine;
 using AppsFlyerSDK;
 namespace SDK
 {
+#if UNITY_APPSFLYER
     public class ABIAppsflyerManager : MonoBehaviour, IAppsFlyerConversionData
     {
         private static ABIAppsflyerManager instance;
@@ -138,5 +139,6 @@ namespace SDK
         #endregion
 
     }
+#endif
 }
 

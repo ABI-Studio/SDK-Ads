@@ -70,7 +70,9 @@ namespace SDK {
                             new Parameter("revenue_inters", totalRevenue)
                         };
                         ABIFirebaseManager.Instance.LogFirebaseEvent(eventName, parameters);
+#if UNITY_APPSFLYER
                         ABIAppsflyerManager.TrackRewarded_ShowCount(totalWatched);
+#endif
                     }
                     break;
                 case "INTER": {
@@ -91,7 +93,9 @@ namespace SDK {
                             new Parameter("revenue_reward", totalRevenue)
                         };
                         ABIFirebaseManager.Instance.LogFirebaseEvent(eventName, parameters);
-                        ABIAppsflyerManager.Instance.TrackInterstitial_ShowCount(totalWatched, totalRevenue);
+#if UNITY_APPSFLYER
+                    ABIAppsflyerManager.Instance.TrackInterstitial_ShowCount(totalWatched, totalRevenue);
+#endif
                     }
                     break;
             }
@@ -107,11 +111,15 @@ namespace SDK {
 
         public void TrackAdsReward_ClickOnButton() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ads_reward_click);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackRewarded_ClickShowButton();
+#endif
         }
         public void TrackAdsReward_StartShow() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ads_reward_show);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackRewarded_Displayed();
+#endif
         }
         public void TrackAdsReward_ShowFail() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ads_reward_fail);
@@ -124,7 +132,9 @@ namespace SDK {
         }
         public void TrackAdsReward_LoadSuccess() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ads_reward_loadsuccess);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackRewarded_LoadedSuccess();
+#endif
         }
         #endregion
 
@@ -136,18 +146,24 @@ namespace SDK {
 
         public void TrackAdsInterstitial_LoadedSuccess() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ad_inter_load);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackInterstitial_LoadedSuccess();
+#endif
         }
         public void TrackAdsInterstitial_ShowSuccess() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ad_inter_show);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackInterstitial_Displayed();
+#endif
         }
         public void TrackAdsInterstitial_ShowFail() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ad_inter_fail);
         }
         public void TrackAdsInterstitial_ClickOnButton() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ad_inter_click);
+#if UNITY_APPSFLYER
             ABIAppsflyerManager.TrackInterstitial_ClickShowButton();
+#endif
         }
         #endregion
 
@@ -155,14 +171,18 @@ namespace SDK {
 
         public void TrackSessionStart(int id) {
             string eventName = "session_start_" + id;
-            ABIAppsflyerManager.SendEvent(eventName, null);
             ABIFirebaseManager.Instance.LogFirebaseEvent(eventName);
+#if UNITY_APPSFLYER
+            ABIAppsflyerManager.SendEvent(eventName, null);
+#endif
         }
         public void TrackEventMapComplete(int map) {
 
             string eventName = "map" + map + "_completed";
-            ABIAppsflyerManager.SendEvent(eventName, null);
             ABIFirebaseManager.Instance.LogFirebaseEvent(eventName);
+#if UNITY_APPSFLYER
+            ABIAppsflyerManager.SendEvent(eventName, null);
+#endif
         }
     }
     public class ImpressionData {

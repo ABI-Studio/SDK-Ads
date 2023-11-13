@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SDK;
 using Sirenix.OdinInspector;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,7 +15,8 @@ public partial class SDKSetup : ScriptableObject
     private const string MAX_MEDIATION_SYMBOL = "UNITY_AD_MAX";
     private const string ADMOB_MEDIATION_SYMBOL = "UNITY_AD_ADMOB";
     private const string IRONSOURCE_MEDIATION_SYMBOL = "UNITY_AD_IRONSOURCE";
-    
+
+    public bool IsActiveAppsflyer = true;
     [HideInInspector]public MaxAdSetup maxAdsSetup;
     [HideInInspector]public AdmobAdSetup admobAdsSetup;
     
@@ -35,6 +37,58 @@ public partial class SDKSetup : ScriptableObject
     {
         return GetAdsMediationType(adsType) != AdsMediationType.NONE;
     }
+    
+#if UNITY_EDITOR
+    [Button(ButtonSizes.Medium)]
+    public void Setup()
+    {
+        
+        AdsManager adsManager = FindObjectOfType<AdsManager>();
+        if (adsManager != null)
+        {
+            adsManager.UpdateAdsMediationConfig();
+            EditorUtility.SetDirty(adsManager);
+            EditorSceneManager.MarkSceneDirty(adsManager.gameObject.scene);
+        }
+
+        string appsflyerDefineSymbol = "UNITY_APPSFLYER";
+        if (IsActiveAppsflyer)
+        {
+            AddDefineSymbol(appsflyerDefineSymbol);   
+        }
+        else
+        {
+            RemoveDefineSymbol(appsflyerDefineSymbol);
+        }  
+    }
+    private void AddDefineSymbol(string defineSymbol)
+    {
+        string currentDefineSymbols =
+            PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+        string[] defineSymbols = currentDefineSymbols.Split(';');
+        List<string> defineSymbolList = new List<string>(defineSymbols);
+        currentDefineSymbols = string.Join(";", defineSymbolList.ToArray());
+        if (currentDefineSymbols.Contains(defineSymbol)) return;
+        currentDefineSymbols += ";" + defineSymbol;
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup,
+            currentDefineSymbols);
+    }
+
+    private void RemoveDefineSymbol(string defineSymbol)
+    {
+        string currentDefineSymbols =
+            PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+        string[] defineSymbols = currentDefineSymbols.Split(';');
+        List<string> defineSymbolList = new List<string>(defineSymbols);
+        if (defineSymbolList.Contains(defineSymbol))
+        {
+            defineSymbolList.Remove(defineSymbol);
+        }
+        currentDefineSymbols = string.Join(";", defineSymbolList.ToArray());
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup,
+            currentDefineSymbols);
+    }
+#endif
 }
 public partial class SDKSetup
 {
