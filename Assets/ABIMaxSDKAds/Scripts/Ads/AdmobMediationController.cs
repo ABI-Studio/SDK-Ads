@@ -160,11 +160,9 @@ namespace SDK {
             interstitialAd.OnAdFullScreenContentOpened += OnAdInterstitialOpening;
             interstitialAd.OnAdFullScreenContentFailed += OnAdInterstitialFailToShow;
         }
-        public override bool IsInterstitialLoaded() {
-            if (m_InterstitialAds != null) {
-                return m_InterstitialAds.CanShowAd();
-            }
-            return false;
+        public override bool IsInterstitialLoaded()
+        {
+            return m_InterstitialAds != null && m_InterstitialAds.CanShowAd();
         }
         public override void ShowInterstitialAd() {
             base.ShowInterstitialAd();
@@ -173,34 +171,26 @@ namespace SDK {
             }
         }
         private void OnCloseInterstitialAd() {
-            if (m_InterstitialAdCloseCallback != null) {
-                m_InterstitialAdCloseCallback();
-            }
+            m_InterstitialAdCloseCallback?.Invoke();
             Debug.Log("Close Interstitial");
         }
         private void OnAdInterstitialSuccessToLoad() {
-            if (m_InterstitialAdLoadSuccessCallback != null) {
-                m_InterstitialAdLoadSuccessCallback();
-            }
+            m_InterstitialAdLoadSuccessCallback?.Invoke();
             m_AdmobAdSetup.InterstitialAdUnitID.Refresh();
             Debug.Log("Load Interstitial success");
         }
         private void OnAdInterstitialFailedToLoad() {
-            if (m_InterstitialAdLoadFailCallback != null) {
-                m_InterstitialAdLoadFailCallback();
-            }
+            m_InterstitialAdLoadFailCallback?.Invoke();
             m_AdmobAdSetup.InterstitialAdUnitID.ChangeID();
             Debug.Log("Load Interstitial failed Admob");
         }
-        private void OnAdInterstitialOpening() {
-            if (m_InterstitialAdShowSuccessCallback != null) {
-                m_InterstitialAdShowSuccessCallback();
-            }
+        private void OnAdInterstitialOpening()
+        {
+            m_InterstitialAdShowSuccessCallback?.Invoke();
         }
-        private void OnAdInterstitialFailToShow(AdError e) {
-            if (m_InterstitialAdShowFailCallback != null) {
-                m_InterstitialAdShowFailCallback();
-            }
+        private void OnAdInterstitialFailToShow(AdError e)
+        {
+            m_InterstitialAdShowFailCallback?.Invoke();
         }
         public void DestroyInterstitialAd() {
             if (m_InterstitialAds != null) {
@@ -229,9 +219,7 @@ namespace SDK {
             string adUnitId = GetRewardedAdID();
             Debug.Log("RewardedVideoAd ADMOB Reloaded ID " + adUnitId);
             if (string.IsNullOrEmpty(adUnitId)) {
-                if (m_RewardedVideoLoadFailedCallback != null) {
-                    m_RewardedVideoLoadFailedCallback();
-                }
+                m_RewardedVideoLoadFailedCallback?.Invoke();
                 m_AdmobAdSetup.RewardedAdUnitID.ChangeID();
             }
             if (m_RewardVideoAds != null && m_RewardVideoAds.CanShowAd()) return;
@@ -257,12 +245,11 @@ namespace SDK {
         }
         public override void ShowRewardVideoAd(UnityAction successCallback, UnityAction failedCallback) {
             base.ShowRewardVideoAd(successCallback, failedCallback);
-            if (IsRewardVideoLoaded()) {
+            if (IsRewardVideoLoaded())
+            {
                 Debug.Log("RewardedVideoAd ADMOB Show");
                 m_IsWatchSuccess = false;
-                m_RewardVideoAds.Show((Reward reward) => {
-                    OnRewardBasedVideoRewarded();
-                });
+                m_RewardVideoAds.Show((Reward reward) => { OnRewardBasedVideoRewarded(); });
             }
         }
         public override bool IsRewardVideoLoaded() {
@@ -302,16 +289,12 @@ namespace SDK {
         }
         private void OnRewardBasedVideoFailedToLoad() {
             Debug.Log("RewardedVideoAd ADMOB Load Fail");
-            if (m_RewardedVideoLoadFailedCallback != null) {
-                m_RewardedVideoLoadFailedCallback();
-            }
+            m_RewardedVideoLoadFailedCallback?.Invoke();
             m_AdmobAdSetup.RewardedAdUnitID.ChangeID();
         }
         public void OnRewardedAdFailedToShow(AdError args) {
             Debug.Log("RewardedVideoAd ADMOB Show Fail " + args.GetMessage());
-            if (m_RewardedVideoShowFailCallback != null) {
-                m_RewardedVideoShowFailCallback();
-            }
+            m_RewardedVideoShowFailCallback?.Invoke();
         }
         private void OnRewardBasedVideoOpened() {
             Debug.Log("Opened video success");

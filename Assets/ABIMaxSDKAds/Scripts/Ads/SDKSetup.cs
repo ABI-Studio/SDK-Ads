@@ -50,6 +50,10 @@ public partial class SDKSetup : ScriptableObject
             EditorUtility.SetDirty(adsManager);
             EditorSceneManager.MarkSceneDirty(adsManager.gameObject.scene);
         }
+        else
+        {
+            Debug.LogError("Please add Manager Prefab to scene (Assets/ABIMaxSDKAds/Prefabs/Manager.prefab)");
+        }
 
         string appsflyerDefineSymbol = "UNITY_APPSFLYER";
         if (IsActiveAppsflyer)

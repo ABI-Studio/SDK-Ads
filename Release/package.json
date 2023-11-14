@@ -1,0 +1,8 @@
+{
+  "name": "com.abi.sdk.Package",
+  "displayName": "SDK Package",
+  "version": "1.0.0",
+  "description": "This package is used to import ad mediation, firebase, facebook, appsflyer for games.",
+  "unity": "2021.3",
+  "keywords": ["custom", "package"]
+}

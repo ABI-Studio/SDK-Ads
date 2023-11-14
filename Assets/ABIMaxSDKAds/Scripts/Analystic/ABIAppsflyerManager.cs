@@ -129,7 +129,7 @@ namespace SDK
             eventValue.Add("ad_format", impressionData.ad_format);
             eventValue.Add("placement","");
             eventValue.Add("value", impressionData.ad_revenue.ToString());
-            eventValue.Add("currency", "USD");
+            eventValue.Add("currency", impressionData.ad_currency);
             AppsFlyerAdRevenue.logAdRevenue(impressionData.ad_source, 
                 AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeApplovinMax,
                 impressionData.ad_revenue,
