@@ -118,20 +118,39 @@ namespace SDK {
             m_AppOpenAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.APP_OPEN)),OnAdRevenuePaidEvent);
         }
         private void InitAdsMediation() {
-            if (!GetSelectedMediation(AdsType.INTERSTITIAL).IsInited) {
-                GetSelectedMediation(AdsType.INTERSTITIAL).Init();
+            {
+                AdsMediationController adsMediationController = GetSelectedMediation(AdsType.INTERSTITIAL);
+                if(adsMediationController != null && !adsMediationController.IsInited) {
+                    GetSelectedMediation(AdsType.INTERSTITIAL).Init();
+                }
             }
-            if (!GetSelectedMediation(AdsType.REWARDED).IsInited) {
-                GetSelectedMediation(AdsType.REWARDED).Init();
+
+            {
+                AdsMediationController adsMediationController = GetSelectedMediation(AdsType.REWARDED);
+                if(adsMediationController != null && !adsMediationController.IsInited) {
+                    GetSelectedMediation(AdsType.REWARDED).Init();
+                }
             }
-            if(!GetSelectedMediation(AdsType.BANNER).IsInited) {
-                GetSelectedMediation(AdsType.BANNER).Init();
+
+            {
+                AdsMediationController adsMediationController = GetSelectedMediation(AdsType.BANNER);
+                if(adsMediationController != null && !adsMediationController.IsInited) {
+                    GetSelectedMediation(AdsType.BANNER).Init();
+                }
             }
-            if(!GetSelectedMediation(AdsType.MREC).IsInited) {
-                GetSelectedMediation(AdsType.MREC).Init();
+
+            {
+                AdsMediationController adsMediationController = GetSelectedMediation(AdsType.MREC);
+                if(adsMediationController != null && !adsMediationController.IsInited) {
+                    GetSelectedMediation(AdsType.MREC).Init();
+                }
             }
-            if(!GetSelectedMediation(AdsType.APP_OPEN).IsInited) {
-                GetSelectedMediation(AdsType.APP_OPEN).Init();
+
+            {
+                AdsMediationController adsMediationController = GetSelectedMediation(AdsType.APP_OPEN);
+                if(adsMediationController != null && !adsMediationController.IsInited) {
+                    GetSelectedMediation(AdsType.APP_OPEN).Init();
+                }
             }
         }
         public void InitAdsType() {
