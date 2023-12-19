@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using SDK;
 using Sirenix.OdinInspector;
-using UnityEditor.SceneManagement;
+
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
 #endif
 
 [CreateAssetMenu(fileName = "SDKAdsSetup", menuName = "Tools/SDK Ads Setup", order = 1)]
@@ -17,6 +18,7 @@ public partial class SDKSetup : ScriptableObject
     private const string IRONSOURCE_MEDIATION_SYMBOL = "UNITY_AD_IRONSOURCE";
 
     public bool IsActiveAppsflyer = true;
+    public float interstitialCappingTime = 30;
     [HideInInspector]public MaxAdSetup maxAdsSetup;
     [HideInInspector]public AdmobAdSetup admobAdsSetup;
     

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SDKAdsSetup
   m_EditorClassIdentifier: 
   IsActiveAppsflyer: 1
+  interstitialCappingTime: 30
   maxAdsSetup:
     sdkKey:
       AndroidID: ZoNyqu_piUmpl33-qkoIfRp6MTZGW9M5xk1mb1ZIWK6FN9EBu0TXSHeprC3LMPQI7S3kTc1-x7DJGSV8S-gvFJ
@@ -46,5 +47,5 @@ MonoBehaviour:
   interstitialAdsMediationType: 1
   rewardedAdsMediationType: 1
   bannerAdsMediationType: 1
-  mrecAdsMediationType: 1
+  mrecAdsMediationType: 0
   appOpenAdsMediationType: 0
