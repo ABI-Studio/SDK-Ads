@@ -42,9 +42,7 @@ namespace SDK {
             await m_FirebaseRemoteConfigManager.InitRemoteConfig();
             IsFirebaseReady = true;
             OnFetchSuccess();
-            if (m_FirebaseInitedSuccessCallback != null) {
-                m_FirebaseInitedSuccessCallback();
-            }
+            m_FirebaseInitedSuccessCallback?.Invoke();
         }
         private void OnFetchSuccess() {
             Debug.Log("Fetch Success");

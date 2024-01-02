@@ -65,7 +65,16 @@ public partial class SDKSetup : ScriptableObject
         else
         {
             RemoveDefineSymbol(appsflyerDefineSymbol);
-        }  
+        }
+
+        if (adsMediationType == AdsMediationType.MAX)
+        {
+            string assetPath = "Assets/MaxSdk/Resources/AppLovinSettings.asset";
+            AppLovinSettings applovinSettings = AssetDatabase.LoadAssetAtPath<AppLovinSettings>(assetPath);
+            applovinSettings.SdkKey = sdkKey_MAX;
+            EditorUtility.SetDirty(applovinSettings);
+            AssetDatabase.SaveAssets();
+        }
     }
     private void AddDefineSymbol(string defineSymbol)
     {

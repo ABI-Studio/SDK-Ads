@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using Firebase.RemoteConfig;
 using System.Threading.Tasks;
+using Firebase.Extensions;
+
 namespace SDK
 {
     public class FirebaseRemoteConfigManager
@@ -26,7 +28,7 @@ namespace SDK
             defaults.Add(ABI.Keys.key_remote_free_ads, "");
             FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.DefaultInstance;
             return remoteConfig.SetDefaultsAsync(defaults)
-                .ContinueWith(result => remoteConfig.FetchAndActivateAsync())
+                .ContinueWithOnMainThread(result => remoteConfig.FetchAndActivateAsync())
                 .Unwrap();
         }
         public ConfigValue GetValues(string key)
@@ -46,7 +48,7 @@ namespace SDK
             {
                 Task fetchTask = FirebaseRemoteConfig.DefaultInstance.FetchAsync(
                     System.TimeSpan.Zero);
-                fetchTask.ContinueWith(FetchComplete);
+                fetchTask.ContinueWithOnMainThread(FetchComplete);
 
             }
             catch (System.Exception)
