@@ -1,3 +1,4 @@
+using Firebase;
 using Firebase.Analytics;
 using Firebase.Extensions;
 using Firebase.RemoteConfig;
@@ -14,35 +15,37 @@ namespace SDK {
         public UnityAction m_FirebaseInitedSuccessCallback;
 
         private static ABIFirebaseManager m_Instance;
-        public static ABIFirebaseManager Instance {
-            get {
-                return m_Instance;
-            }
-        }
+        public static ABIFirebaseManager Instance => m_Instance;
 
+        public FirebaseApp FirebaseApp { get; set; }
         private void Awake() {
             m_Instance = this;
             DontDestroyOnLoad(gameObject);
             Init();
-
         }
-        public void Init() {
+        private void Init() {
             m_FirebaseAnalyticsManager = new FirebaseAnalyticsManager();
             m_FirebaseRemoteConfigManager = new FirebaseRemoteConfigManager();
             Debug.Log("Start Config");
             Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
-                if (task.Result == Firebase.DependencyStatus.Available) {
+                DependencyStatus dependencyStatus = task.Result;
+                if (dependencyStatus == Firebase.DependencyStatus.Available) {
                     InitializeFirebase();
                 } else {
                     Debug.LogError("Could not resolve all Firebase dependencies: " + task.Result);
                 }
             });
         }
-        private async void InitializeFirebase() {
-            await m_FirebaseRemoteConfigManager.InitRemoteConfig();
+        private void InitializeFirebase()
+        {
+            FirebaseApp = FirebaseApp.DefaultInstance;
             IsFirebaseReady = true;
-            OnFetchSuccess();
             m_FirebaseInitedSuccessCallback?.Invoke();
+            SetupRemoteConfig();
+        }
+        private void SetupRemoteConfig()
+        {
+            m_FirebaseRemoteConfigManager.InitRemoteConfig(OnFetchSuccess);
         }
         private void OnFetchSuccess() {
             Debug.Log("Fetch Success");
@@ -71,8 +74,8 @@ namespace SDK {
                 m_FirebaseAnalyticsManager.SetUserProperty(propertyName, property);
             }
         }
-        public void FetchData(UnityAction successCallback) {
-            m_FirebaseRemoteConfigManager.FetchData(successCallback);
+        public void FetchData(System.Action successCallback) {
+            m_FirebaseRemoteConfigManager.FetchRemoteConfig(successCallback);
         }
         public ConfigValue GetConfigValue(string key) {
             return m_FirebaseRemoteConfigManager.GetValues(key);

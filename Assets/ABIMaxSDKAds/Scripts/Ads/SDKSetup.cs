@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 
 using UnityEngine;
 #if UNITY_EDITOR
+using GoogleMobileAds.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
@@ -44,7 +45,6 @@ public partial class SDKSetup : ScriptableObject
     [Button(ButtonSizes.Medium)]
     public void Setup()
     {
-        
         AdsManager adsManager = FindObjectOfType<AdsManager>();
         if (adsManager != null)
         {
@@ -75,6 +75,7 @@ public partial class SDKSetup : ScriptableObject
             EditorUtility.SetDirty(applovinSettings);
             AssetDatabase.SaveAssets();
         }
+        
     }
     private void AddDefineSymbol(string defineSymbol)
     {
@@ -230,7 +231,6 @@ public partial class SDKSetup
 
 public partial class SDKSetup
 {
-    
     [BoxGroup("APP OPEN")]public AdsMediationType appOpenAdsMediationType;
     [BoxGroup("APP OPEN")][ShowInInspector, ShowIf("@appOpenAdsMediationType == AdsMediationType.MAX")]
     public string appOpenAdUnitID_MAX

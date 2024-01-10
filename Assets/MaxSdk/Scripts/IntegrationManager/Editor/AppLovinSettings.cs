@@ -58,6 +58,7 @@ public class AppLovinSettings : ScriptableObject
     [SerializeField] private string sdkKey;
 
     [SerializeField] private bool setAttributionReportEndpoint;
+    [SerializeField] private bool addApsSkAdNetworkIds;
 
     [SerializeField] private bool consentFlowEnabled;
     [SerializeField] private Platform consentFlowPlatform;
@@ -161,6 +162,15 @@ public class AppLovinSettings : ScriptableObject
     {
         get { return Instance.setAttributionReportEndpoint; }
         set { Instance.setAttributionReportEndpoint = value; }
+    }
+
+    /// <summary>
+    /// Whether or not to add Amazon Publisher Services SKAdNetworkID's.
+    /// </summary>
+    public bool AddApsSkAdNetworkIds
+    {
+        get { return Instance.addApsSkAdNetworkIds; }
+        set { Instance.addApsSkAdNetworkIds = value; }
     }
 
     /// <summary>

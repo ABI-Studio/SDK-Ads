@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using AppLovinMax.Internal.API;
 using AppLovinMax.ThirdParty.MiniJson;
 
 public class MaxSdkCallbacks : MonoBehaviour
@@ -45,23 +44,6 @@ public class MaxSdkCallbacks : MonoBehaviour
         {
             LogUnsubscribedToEvent("OnSdkInitializedEvent");
             _onSdkInitializedEvent -= value;
-        }
-    }
-
-    // Fire when the MaxVariableService has finished loading the latest set of variables.
-    private static Action _onVariablesUpdatedEvent;
-    [System.Obsolete("This API has been deprecated. Please use our SDK's initialization callback to retrieve variables instead.")]
-    public static event Action OnVariablesUpdatedEvent
-    {
-        add
-        {
-            LogSubscribedToEvent("OnVariablesUpdatedEvent");
-            _onVariablesUpdatedEvent += value;
-        }
-        remove
-        {
-            LogUnsubscribedToEvent("OnVariablesUpdatedEvent");
-            _onVariablesUpdatedEvent -= value;
         }
     }
 
@@ -1360,17 +1342,14 @@ public class MaxSdkCallbacks : MonoBehaviour
             var sdkConfiguration = MaxSdkBase.SdkConfiguration.Create(eventProps);
             InvokeEvent(_onSdkInitializedEvent, sdkConfiguration, eventName);
         }
-        else if (eventName == "OnVariablesUpdatedEvent")
-        {
-            InvokeEvent(_onVariablesUpdatedEvent, eventName);
-        }
         else if (eventName == "OnSdkConsentDialogDismissedEvent")
         {
             InvokeEvent(_onSdkConsentDialogDismissedEvent, eventName);
         }
-        else if (eventName == "OnSdkConsentFlowCompletedEvent")
+        else if (eventName == "OnCmpCompletedEvent")
         {
-            CFService.NotifyConsentFlowCompletedIfNeeded(eventProps);
+            var errorProps = MaxSdkUtils.GetDictionaryFromDictionary(eventProps, "error");
+            MaxCmpService.NotifyCompletedIfNeeded(errorProps);
         }
         // Ad Events
         else
@@ -1734,7 +1713,6 @@ public class MaxSdkCallbacks : MonoBehaviour
     private static void ResetOnDomainReload()
     {
         _onSdkInitializedEvent = null;
-        _onVariablesUpdatedEvent = null;
         _onSdkConsentDialogDismissedEvent = null;
 
         _onInterstitialAdLoadedEventV2 = null;

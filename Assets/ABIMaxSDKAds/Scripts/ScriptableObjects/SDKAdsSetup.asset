@@ -43,9 +43,9 @@ MonoBehaviour:
     appOpenAdUnitID:
       AndroidID:
       - ca-app-pub-3940256099942544/3419835294
-  adsMediationType: 1
-  interstitialAdsMediationType: 1
-  rewardedAdsMediationType: 1
-  bannerAdsMediationType: 1
+  adsMediationType: 2
+  interstitialAdsMediationType: 2
+  rewardedAdsMediationType: 2
+  bannerAdsMediationType: 2
   mrecAdsMediationType: 0
   appOpenAdsMediationType: 0

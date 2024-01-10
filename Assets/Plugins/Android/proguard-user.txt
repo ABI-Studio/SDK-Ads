@@ -22,3 +22,4 @@ public *;
 -keep class com.google.android.play.core.** { *; }
 -keep class androidx.core.app.CoreComponentFactory { *; }
 -keep class com.appsflyer.** { *; }
+-keep class com.google.unity.** {*;}

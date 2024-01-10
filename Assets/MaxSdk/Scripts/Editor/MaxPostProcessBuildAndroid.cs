@@ -6,7 +6,7 @@
 //  Copyright © 2020 AppLovin. All rights reserved.
 //
 
-#if UNITY_ANDROID && UNITY_2018_2_OR_NEWER
+#if UNITY_ANDROID
 using AppLovinMax.Scripts.IntegrationManager.Editor;
 using System;
 using System.Collections.Generic;
@@ -93,9 +93,8 @@ namespace AppLovinMax.Scripts.Editor
             ProcessAndroidManifest(path);
 
             var rawResourceDirectory = Path.Combine(path, "src/main/res/raw");
-            if (AppLovinSettings.Instance.ShowInternalSettingsInIntegrationManager)
+            if (AppLovinInternalSettings.Instance.ConsentFlowEnabled)
             {
-                // For Unity 2018.1 or older, the consent flow is enabled in AppLovinPreProcessAndroid.
                 AppLovinPreProcessAndroid.EnableConsentFlowIfNeeded(rawResourceDirectory);
             }
             else

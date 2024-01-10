@@ -32,11 +32,6 @@ public class MaxSdkUnityEditor : MaxSdkBase
     private static readonly HashSet<string> ReadyAdUnits = new HashSet<string>();
     private static readonly Dictionary<string, GameObject> StubBanners = new Dictionary<string, GameObject>();
 
-    public static MaxVariableServiceUnityEditor VariableService
-    {
-        get { return MaxVariableServiceUnityEditor.Instance; }
-    }
-
     public static MaxUserServiceUnityEditor UserService
     {
         get { return MaxUserServiceUnityEditor.Instance; }

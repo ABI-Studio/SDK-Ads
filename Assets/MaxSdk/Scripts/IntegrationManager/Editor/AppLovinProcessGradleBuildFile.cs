@@ -29,7 +29,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
     /// Adds or updates the AppLovin Quality Service plugin to the provided build.gradle file.
     /// If the gradle file already has the plugin, the API key is updated.
     /// </summary>
-    public abstract class AppLovinProcessGradleBuildFile
+    public abstract class AppLovinProcessGradleBuildFile : AppLovinPreProcess
     {
         private static readonly Regex TokenBuildScriptRepositories = new Regex(".*repositories.*");
         private static readonly Regex TokenBuildScriptDependencies = new Regex(".*classpath \'com.android.tools.build:gradle.*");
@@ -63,7 +63,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         /// Updates the provided Gradle script to add Quality Service plugin.
         /// </summary>
         /// <param name="applicationGradleBuildFilePath">The gradle file to update.</param>
-        protected void AddAppLovinQualityServicePlugin(string applicationGradleBuildFilePath)
+        protected static void AddAppLovinQualityServicePlugin(string applicationGradleBuildFilePath)
         {
             if (!AppLovinSettings.Instance.QualityServiceEnabled) return;
 
@@ -297,21 +297,15 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 unityWebRequest.uploadHandler = uploadHandler;
                 unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
 
-#if UNITY_2017_2_OR_NEWER
                 var operation = unityWebRequest.SendWebRequest();
-#else
-                var operation = webRequest.Send();
-#endif
 
                 // Wait for the download to complete or the request to timeout.
                 while (!operation.isDone) { }
 
 #if UNITY_2020_1_OR_NEWER
                 if (unityWebRequest.result != UnityWebRequest.Result.Success)
-#elif UNITY_2017_2_OR_NEWER
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
 #else
-                if (webRequest.isError)
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
 #endif
                 {
                     MaxSdkLogger.UserError("Failed to retrieve API Key for SDK Key: " + sdkKey + "with error: " + unityWebRequest.error);

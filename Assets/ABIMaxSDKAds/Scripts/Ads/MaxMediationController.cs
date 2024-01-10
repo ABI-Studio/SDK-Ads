@@ -9,7 +9,6 @@ namespace SDK {
 #if UNITY_AD_MAX
         private bool m_IsWatchSuccess = false;
         public MaxAdSetup m_MaxAdConfig;
-        private bool m_IsInited = false;
 
         private void Awake() {
         }
@@ -19,15 +18,13 @@ namespace SDK {
 
         public override void Init()
         {
+            if (IsInited) return;
             base.Init();
-            if (m_IsInited) return;
-            m_IsInited = true;
             Debug.Log("unity-script: MyAppStart Start called");
-
             MaxSdkCallbacks.OnSdkInitializedEvent += sdkConfiguration => {
                 // AppLovin SDK is initialized, configure and start loading ads.
                 Debug.Log("MAX SDK Initialized");
-                AdsManager.Instance.InitAdsType();
+                AdsManager.Instance.InitAdsType(AdsMediationType.MAX);
             };
             MaxSdk.SetSdkKey(m_MaxAdConfig.SDKKey);
             MaxSdk.InitializeSdk();
@@ -49,6 +46,7 @@ namespace SDK {
         #region Interstitial
         public override void InitInterstitialAd(UnityAction adClosedCallback, UnityAction adLoadSuccessCallback, UnityAction adLoadFailedCallback, UnityAction adShowSuccessCallback, UnityAction adShowFailCallback) {
             base.InitInterstitialAd(adClosedCallback, adLoadSuccessCallback, adLoadFailedCallback, adShowSuccessCallback, adShowFailCallback);
+            Debug.Log("Init MAX Interstitial");
             // Attach callbacks
             MaxSdkCallbacks.Interstitial.OnAdLoadedEvent += OnInterstitialLoadedEvent;
             MaxSdkCallbacks.Interstitial.OnAdLoadFailedEvent += OnInterstitialLoadFailedEvent;
