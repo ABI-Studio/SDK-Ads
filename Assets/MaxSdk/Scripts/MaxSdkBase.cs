@@ -168,7 +168,6 @@ public abstract class MaxSdkBase
                 sdkConfiguration.ConsentFlowUserGeography = ConsentFlowUserGeography.Unknown;
             }
 
-
 #pragma warning disable 0618
             var consentDialogStateStr = MaxSdkUtils.GetStringFromDictionary(eventProps, "consentDialogState", "");
             if ("1".Equals(consentDialogStateStr))
@@ -325,6 +324,7 @@ public abstract class MaxSdkBase
         public double Revenue { get; private set; }
         public string RevenuePrecision { get; private set; }
         public WaterfallInfo WaterfallInfo { get; private set; }
+        public long LatencyMillis { get; private set; }
         public string DspName { get; private set; }
 
         public AdInfo(IDictionary<string, object> adInfoDictionary)
@@ -338,6 +338,7 @@ public abstract class MaxSdkBase
             Revenue = MaxSdkUtils.GetDoubleFromDictionary(adInfoDictionary, "revenue", -1);
             RevenuePrecision = MaxSdkUtils.GetStringFromDictionary(adInfoDictionary, "revenuePrecision");
             WaterfallInfo = new WaterfallInfo(MaxSdkUtils.GetDictionaryFromDictionary(adInfoDictionary, "waterfallInfo", new Dictionary<string, object>()));
+            LatencyMillis = MaxSdkUtils.GetLongFromDictionary(adInfoDictionary, "latencyMillis");
             DspName = MaxSdkUtils.GetStringFromDictionary(adInfoDictionary, "dspName");
         }
 
@@ -351,6 +352,7 @@ public abstract class MaxSdkBase
                    ", placement: " + Placement +
                    ", revenue: " + Revenue +
                    ", revenuePrecision: " + RevenuePrecision +
+                   ", latency: " + LatencyMillis +
                    ", dspName: " + DspName + "]";
         }
     }
@@ -469,6 +471,7 @@ public abstract class MaxSdkBase
         public string MediatedNetworkErrorMessage { get; private set; }
         public string AdLoadFailureInfo { get; private set; }
         public WaterfallInfo WaterfallInfo { get; private set; }
+        public long LatencyMillis { get; private set; }
 
         public ErrorInfo(IDictionary<string, object> errorInfoDictionary)
         {
@@ -478,6 +481,7 @@ public abstract class MaxSdkBase
             MediatedNetworkErrorMessage = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "mediatedNetworkErrorMessage", "");
             AdLoadFailureInfo = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "adLoadFailureInfo", "");
             WaterfallInfo = new WaterfallInfo(MaxSdkUtils.GetDictionaryFromDictionary(errorInfoDictionary, "waterfallInfo", new Dictionary<string, object>()));
+            LatencyMillis = MaxSdkUtils.GetLongFromDictionary(errorInfoDictionary, "latencyMillis");
         }
 
         public override string ToString()
@@ -491,7 +495,39 @@ public abstract class MaxSdkBase
                 stringbuilder.Append(", mediatedNetworkMessage: ").Append(MediatedNetworkErrorMessage);
             }
 
+            stringbuilder.Append(", latency: ").Append(LatencyMillis);
             return stringbuilder.Append(", adLoadFailureInfo: ").Append(AdLoadFailureInfo).Append("]").ToString();
+        }
+    }
+
+    /// <summary>
+    /// Inset values for the safe area on the screen used to render banner ads.
+    /// </summary>
+    public class SafeAreaInsets
+    {
+        public int Left { get; private set; }
+        public int Top { get; private set; }
+        public int Right { get; private set; }
+        public int Bottom { get; private set; }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="SafeAreaInsets"/>.
+        /// </summary>
+        /// <param name="insets">An integer array with insets values in the order of left, top, right, and bottom</param>
+        internal SafeAreaInsets(int[] insets)
+        {
+            Left = insets[0];
+            Top = insets[1];
+            Right = insets[2];
+            Bottom = insets[3];
+        }
+
+        public override string ToString()
+        {
+            return "[SafeAreaInsets: Left: " + Left +
+                   ", Top: " + Top +
+                   ", Right: " + Right +
+                   ", Bottom: " + Bottom + "]";
         }
     }
 

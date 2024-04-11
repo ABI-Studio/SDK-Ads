@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GoogleMobileAds.Api;
 using SDK;
 using Sirenix.OdinInspector;
 
@@ -28,6 +29,7 @@ public partial class SDKSetup : ScriptableObject
         return adsType switch
         {
             AdsType.BANNER => bannerAdsMediationType,
+            AdsType.COLLAPSIBLE_BANNER => collapsibleBannerAdsMediationType,
             AdsType.INTERSTITIAL => interstitialAdsMediationType,
             AdsType.REWARDED => rewardedAdsMediationType,
             AdsType.MREC => mrecAdsMediationType,
@@ -179,7 +181,6 @@ public partial class SDKSetup
         set => admobAdsSetup.InterstitialAdUnitIDList = value;
     }
 }
-
 public partial class SDKSetup
 {
     [BoxGroup("REWARDED")]public AdsMediationType rewardedAdsMediationType;
@@ -199,6 +200,11 @@ public partial class SDKSetup
 public partial class SDKSetup
 {
     [BoxGroup("BANNER")] public AdsMediationType bannerAdsMediationType;
+    
+    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition bannerAdsPosition;
+    
+    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isBannerShowingOnStart = false;
+
     [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.MAX")]
     public string bannerAdUnitID_MAX
     {
@@ -210,6 +216,27 @@ public partial class SDKSetup
     {
         get => admobAdsSetup.BannerAdUnitIDList;
         set => admobAdsSetup.BannerAdUnitIDList = value;
+    }
+}
+public partial class SDKSetup
+{
+    [BoxGroup("COLLAPSIBLE BANNER")] public AdsMediationType collapsibleBannerAdsMediationType;
+    
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition collapsibleBannerAdsPosition;
+    
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerShowingOnStart = false;
+
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType == AdsMediationType.MAX")]
+    public string collapsibleBannerAdUnitID_MAX
+    {
+        get => maxAdsSetup.CollapsibleBannerAdUnitID;
+        set => maxAdsSetup.CollapsibleBannerAdUnitID = value;
+    }
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType == AdsMediationType.ADMOB")]
+    public List<string> collapsibleBannerAdUnitID_ADMOB
+    {
+        get => admobAdsSetup.CollapsibleBannerAdUnitIDList;
+        set => admobAdsSetup.CollapsibleBannerAdUnitIDList = value;
     }
 }
 public partial class SDKSetup

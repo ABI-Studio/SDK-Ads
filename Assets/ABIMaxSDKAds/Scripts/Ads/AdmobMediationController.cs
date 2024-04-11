@@ -15,11 +15,9 @@ namespace SDK
     {
         public string m_AndroidAdmobID_AppId;
         public AdmobAdSetup m_AdmobAdSetup;
-        public AdPosition m_BannerPosition;
 
         private InterstitialAd m_InterstitialAds;
         private RewardedAd m_RewardVideoAds;
-        private BannerView m_BannerViewAds;
         private BannerView m_MRECAds;
         private AppOpenAd m_AppOpenAd;
         private bool m_IsWatchSuccess = false;
@@ -28,7 +26,6 @@ namespace SDK
         {
             if (IsInited) return;
             base.Init();
-            //InitConsent();
             InitAdmob();
         }
 
@@ -109,50 +106,57 @@ namespace SDK
         #endregion
 
         #region Banner Ads
-
+        private BannerView m_BannerViewAds;
+        public AdPosition m_BannerPosition;
+        public bool IsBannerShowingOnStart = false;
         public override void InitBannerAds(UnityAction bannerLoadedCallback, UnityAction bannerAdLoadedFailCallback,
             UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback)
         {
             base.InitBannerAds(bannerLoadedCallback, bannerAdLoadedFailCallback, bannerAdsCollapsedCallback, bannerAdsExpandedCallback);
             Debug.Log("Init Admob Banner");
             RequestBannerAds();
+            if (!IsBannerShowingOnStart)
+            {
+                m_BannerViewAds.Hide();
+            }
+            else
+            {
+                m_BannerViewAds.Show();
+            }
         }
 
-        public void CreateBannerView()
+        private BannerView CreateBannerView()
         {
             Debug.Log("Creating banner view");
-            if (m_BannerViewAds != null)
-            {
-                DestroyBannerAd();
-            }
-
             string adUnitId = GetBannerID();
             // Create a 320x50 banner at top of the screen
-            m_BannerViewAds = new BannerView(adUnitId, AdSize.Banner, m_BannerPosition);
-            RegisterBannerEvents(m_BannerViewAds);
+            BannerView bannerView = new BannerView(adUnitId, AdSize.Banner, m_BannerPosition);
+            RegisterBannerEvents(bannerView);
+            return bannerView;
         }
-
+        private void LoadBannerAds(BannerView bannerView)
+        {
+            AdRequest adRequest = new AdRequest();
+            bannerView?.LoadAd(adRequest);
+        }
         public override void RequestBannerAds()
         {
             base.RequestBannerAds();
-
-            if (m_BannerViewAds == null)
-            {
-                CreateBannerView();
-            }
-
-            AdRequest adRequest = new AdRequest();
-            adRequest.Keywords.Add("unity-admob-sample");
-            adRequest.Extras.Add("collapsible", "bottom");
-            // Load the banner with the request.
-            m_BannerViewAds.LoadAd(adRequest);
+            m_BannerViewAds ??= CreateBannerView();
+            LoadBannerAds(m_BannerViewAds);
         }
 
         private void RegisterBannerEvents(BannerView bannerView)
         {
-            bannerView.OnBannerAdLoaded += OnAdBannerLoaded;
+            bannerView.OnBannerAdLoaded += () =>
+            {
+                OnAdBannerLoaded(bannerView);
+            };
             bannerView.OnBannerAdLoadFailed += OnAdBannerFailedToLoad;
-            bannerView.OnAdFullScreenContentOpened += OnAdBannerOpened;
+            bannerView.OnAdFullScreenContentOpened += () =>
+            {
+                OnAdBannerOpened(bannerView);
+            };
             bannerView.OnAdFullScreenContentClosed += OnAdBannerClosed;
             bannerView.OnAdPaid += OnAdBannerPaid;
         }
@@ -160,36 +164,50 @@ namespace SDK
         public override void ShowBannerAds()
         {
             base.ShowBannerAds();
-            m_BannerViewAds.Show();
+            
+            if (m_BannerViewAds != null)
+            {
+                Debug.Log("Start Show banner ads");
+                m_BannerViewAds.Show();
+            }
+            else
+            {
+                Debug.Log("Banner is not loaded yet");
+                RequestBannerAds();
+                m_BannerViewAds?.Show();
+            }
         }
-
         public override void HideBannerAds()
         {
             base.HideBannerAds();
-            m_BannerViewAds.Hide();
+            m_BannerViewAds?.Hide();
         }
-
-        public void OnAdBannerLoaded()
+        public override bool IsBannerLoaded()
+        {
+            return m_BannerViewAds != null;
+        }
+        private void OnAdBannerLoaded(BannerView bannerView)
         {
             Debug.Log("HandleAdLoaded event received");
             m_AdmobAdSetup.BannerAdUnitID.Refresh();
             m_BannerAdLoadedSuccessCallback?.Invoke();
         }
 
-        public void OnAdBannerFailedToLoad(LoadAdError args)
+        private void OnAdBannerFailedToLoad(LoadAdError args)
         {
             Debug.Log("AdmobBanner Fail: " + args.GetMessage());
             m_AdmobAdSetup.BannerAdUnitID.ChangeID();
             m_BannerAdLoadedFailCallback?.Invoke();
+            LoadBannerAds(CreateBannerView());
         }
 
-        public void OnAdBannerOpened()
+        private void OnAdBannerOpened(BannerView bannerView)
         {
             Debug.Log("AdmobBanner Opened");
             m_BannerAdsExpandedCallback?.Invoke();
         }
 
-        public void OnAdBannerClosed()
+        private void OnAdBannerClosed()
         {
             Debug.Log("AdmobBanner Closed");
             m_BannerAdsCollapsedCallback?.Invoke();
@@ -197,28 +215,179 @@ namespace SDK
 
         private void OnAdBannerPaid(AdValue adValue)
         {
+            
         }
 
         /// <summary>
         /// Destroys the ad.
         /// </summary>
-        public void DestroyBannerAd()
+        public override void DestroyBannerAds()
         {
+            base.DestroyBannerAds();
             if (m_BannerViewAds != null)
             {
                 Debug.Log("Destroying banner ad.");
                 m_BannerViewAds.Destroy();
                 m_BannerViewAds = null;
             }
+            else
+            {
+                Debug.Log("Don't have any banner to destroy.");
+            }
         }
 
-        public string GetBannerID()
+        private string GetBannerID()
         {
             return m_AdmobAdSetup.BannerAdUnitID.ID;
         }
 
         #endregion
+        
+        #region Collapsible Banner
+        private Queue<BannerView> m_CollapsibleBanners = new Queue<BannerView>();
+        private BannerView m_CurrentCollapsibleBanner;
+        public AdPosition m_CollapsibleBannerPosition;
+        public bool IsCollapsibleBannerShowingOnStart = false;
+        private int m_MaxCacheCollapsibleBanner = 1;
+        public override void InitCollapsibleBannerAds(UnityAction bannerLoadedCallback, UnityAction bannerAdLoadedFailCallback,
+            UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback)
+        {
+            base.InitCollapsibleBannerAds(bannerLoadedCallback, bannerAdLoadedFailCallback, bannerAdsCollapsedCallback, bannerAdsExpandedCallback);
+            Debug.Log("Init Admob Collapsible Banner");
+            RequestCollapsibleBannerAds(IsCollapsibleBannerShowingOnStart);
+        }
 
+        private BannerView CreateCollapsibleBannerView()
+        {
+            Debug.Log("Creating Collapsible Banner view");
+            string adUnitId = GetCollapsibleBannerID();
+            // Create a 320x50 banner at top of the screen
+            BannerView bannerView = new BannerView(adUnitId, AdSize.Banner, m_CollapsibleBannerPosition);
+            RegisterCollapsibleBannerEvents(bannerView);
+            return bannerView;
+        }
+        private void LoadCollapsibleBannerAds(BannerView bannerView)
+        {
+            AdRequest adRequest = new AdRequest();
+            adRequest.Extras.Add("collapsible", "bottom");   
+            bannerView?.LoadAd(adRequest);
+        }
+        public override void RequestCollapsibleBannerAds(bool isOpenOnStart)
+        {
+            base.RequestCollapsibleBannerAds(isOpenOnStart);
+            if (m_CollapsibleBanners.Count >= m_MaxCacheCollapsibleBanner) return;
+            
+            BannerView newBannerView = CreateCollapsibleBannerView();
+            LoadCollapsibleBannerAds(newBannerView);
+            if(isOpenOnStart)
+            {
+                newBannerView.Show();
+                m_CurrentCollapsibleBanner = newBannerView;
+            }
+            else
+            {
+                newBannerView.Hide();
+                m_CollapsibleBanners.Enqueue(newBannerView);
+            }
+        }
+        private void RegisterCollapsibleBannerEvents(BannerView bannerView)
+        {
+            bannerView.OnBannerAdLoaded += () =>
+            {
+                OnAdCollapsibleBannerLoaded(bannerView);
+            };
+            bannerView.OnBannerAdLoadFailed += OnAdCollapsibleBannerFailedToLoad;
+            bannerView.OnAdFullScreenContentOpened += () =>
+            {
+                OnAdCollapsibleBannerOpened(bannerView);
+            };
+            bannerView.OnAdFullScreenContentClosed += OnAdCollapsibleBannerClosed;
+            bannerView.OnAdPaid += OnAdCollapsibleBannerPaid;
+        }
+
+        public override void ShowCollapsibleBannerAds()
+        {
+            base.ShowCollapsibleBannerAds();
+            DestroyCollapsibleBannerAds();
+            
+            BannerView bannerView = null;
+            if (m_CollapsibleBanners.Count > 0)
+            {
+                bannerView = m_CollapsibleBanners.Dequeue();
+            }
+            if (bannerView != null)
+            {
+                Debug.Log("Start show collapsible banner ads");
+                bannerView.Show();
+                m_CurrentCollapsibleBanner = bannerView;
+            }
+            else
+            {
+                Debug.Log("Collapsible Banner is not loaded yet");
+                RequestCollapsibleBannerAds(true);
+            }
+        }
+        public override void HideCollapsibleBannerAds()
+        {
+            base.HideCollapsibleBannerAds();
+            m_CurrentCollapsibleBanner?.Hide();
+        }
+        public override bool IsCollapsibleBannerLoaded()
+        {
+            return m_CollapsibleBanners.Count > 0;
+        }
+        private void OnAdCollapsibleBannerLoaded(BannerView bannerView)
+        {
+            Debug.Log("Admob Collapsible Banner Loaded");
+            m_AdmobAdSetup.CollapsibleBannerAdUnitID.Refresh();
+            m_CollapsibleBannerAdLoadedSuccessCallback?.Invoke();
+        }
+        private void OnAdCollapsibleBannerFailedToLoad(LoadAdError args)
+        {
+            Debug.Log("Admob Collapsible Banner Fail: " + args.GetMessage());
+            m_AdmobAdSetup.CollapsibleBannerAdUnitID.ChangeID();
+            m_CollapsibleBannerAdLoadedFailCallback?.Invoke();
+            LoadCollapsibleBannerAds(CreateCollapsibleBannerView());
+        }
+        private void OnAdCollapsibleBannerOpened(BannerView bannerView)
+        {
+            Debug.Log("Admob Collapsible Banner Opened");
+            m_CollapsibleBannerAdsExpandedCallback?.Invoke();
+        }
+        private void OnAdCollapsibleBannerClosed()
+        {
+            Debug.Log("Admob Collapsible Banner Closed");
+            m_CollapsibleBannerAdsCollapsedCallback?.Invoke();
+            RequestCollapsibleBannerAds(false);
+        }
+        private void OnAdCollapsibleBannerPaid(AdValue adValue)
+        {
+            
+        }
+
+        /// <summary>
+        /// Destroys the ad.
+        /// </summary>
+        public override void DestroyCollapsibleBannerAds()
+        {
+            base.DestroyCollapsibleBannerAds();
+            if (m_CurrentCollapsibleBanner != null)
+            {
+                Debug.Log("Destroying banner ad.");
+                m_CurrentCollapsibleBanner.Destroy();
+                m_CurrentCollapsibleBanner = null;
+            }
+            else
+            {
+                Debug.Log("Don't have any banner to destroy.");
+            }
+        }
+        public string GetCollapsibleBannerID()
+        {
+            return m_AdmobAdSetup.CollapsibleBannerAdUnitID.ID;
+        }
+        #endregion
+        
         #region Interstitial
 
         public override void InitInterstitialAd(UnityAction adClosedCallback, UnityAction adLoadSuccessCallback,
@@ -241,7 +410,7 @@ namespace SDK
                 m_InterstitialAds = null;
             }
 
-            var adRequest = new AdRequest();
+            AdRequest adRequest = new AdRequest();
             adRequest.Keywords.Add("unity-admob-sample");
 
             string adUnitId = GetInterstitialAdUnit();
@@ -747,10 +916,7 @@ namespace SDK
             currentID = 0;
         }
 
-        public string ID
-        {
-            get { return CurrentPlatformID.Count == 0 ? "" : CurrentPlatformID[currentID]; }
-        }
+        public string ID => CurrentPlatformID.Count == 0 ? "" : CurrentPlatformID[currentID];
 
         public List<string> CurrentPlatformID
         {

@@ -332,33 +332,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2822602354715014200, guid: 9ae466a635204e743baa965c6809e8e7,
-        type: 3}
-      propertyPath: m_SDKSetup
-      value: 
-      objectReference: {fileID: 11400000, guid: 249da539afb5e6d4ebc977a0cfeea499,
-        type: 2}
-    - target: {fileID: 2822602354715014200, guid: 9ae466a635204e743baa965c6809e8e7,
-        type: 3}
-      propertyPath: m_MRecAdsConfig.adsMediationType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2822602354715014200, guid: 9ae466a635204e743baa965c6809e8e7,
-        type: 3}
-      propertyPath: m_AppOpenAdsConfig.adsMediationType
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2822602354715014201, guid: 9ae466a635204e743baa965c6809e8e7,
         type: 3}
       propertyPath: m_Name
       value: AdsManager
       objectReference: {fileID: 0}
-    - target: {fileID: 2822602355967738161, guid: 9ae466a635204e743baa965c6809e8e7,
-        type: 3}
-      propertyPath: m_MaxAdConfig
-      value: 
-      objectReference: {fileID: 11400000, guid: 59cc6f8acd6171944aa9697d9f0dfb73,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ae466a635204e743baa965c6809e8e7, type: 3}
 --- !u!4 &6685391519484111092 stripped

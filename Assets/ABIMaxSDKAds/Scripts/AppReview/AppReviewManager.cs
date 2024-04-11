@@ -10,12 +10,16 @@ public class AppReviewManager : MonoBehaviour {
             return m_Instance;
         }
     }
-    private ReviewManager m_ReviewManager = new ReviewManager();
+    private ReviewManager m_ReviewManager;
     private PlayReviewInfo m_PlayerReviewInfo = null;
 
     private void Awake() {
         m_Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+    private void Start()
+    {
+        m_ReviewManager = new ReviewManager();
     }
     public void StartRequestReviewInfo() {
         m_PlayerReviewInfo = null;

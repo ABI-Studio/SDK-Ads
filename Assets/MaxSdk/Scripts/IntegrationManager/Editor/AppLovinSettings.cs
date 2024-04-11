@@ -60,6 +60,9 @@ public class AppLovinSettings : ScriptableObject
     [SerializeField] private bool setAttributionReportEndpoint;
     [SerializeField] private bool addApsSkAdNetworkIds;
 
+    [SerializeField] private string customGradleVersionUrl;
+    [SerializeField] private string customGradleToolsVersion;
+
     [SerializeField] private bool consentFlowEnabled;
     [SerializeField] private Platform consentFlowPlatform;
     [SerializeField] private string consentFlowPrivacyPolicyUrl = string.Empty;
@@ -128,9 +131,13 @@ public class AppLovinSettings : ScriptableObject
                     Directory.CreateDirectory(settingsDir);
                 }
 
-                instance = CreateInstance<AppLovinSettings>();
-                AssetDatabase.CreateAsset(instance, settingsFilePath);
-                MaxSdkLogger.D("Creating new AppLovinSettings asset at path: " + settingsFilePath);
+                // On script reload AssetDatabase.FindAssets() can fail and will overwrite AppLovinSettings without this check
+                if (!File.Exists(settingsFilePath))
+                {
+                    instance = CreateInstance<AppLovinSettings>();
+                    AssetDatabase.CreateAsset(instance, settingsFilePath);
+                    MaxSdkLogger.D("Creating new AppLovinSettings asset at path: " + settingsFilePath);
+                }
             }
 
             return instance;
@@ -171,6 +178,24 @@ public class AppLovinSettings : ScriptableObject
     {
         get { return Instance.addApsSkAdNetworkIds; }
         set { Instance.addApsSkAdNetworkIds = value; }
+    }
+
+    /// <summary>
+    /// A URL to set the distributionUrl in the gradle-wrapper.properties file (ex: https\://services.gradle.org/distributions/gradle-6.9.3-bin.zip)
+    /// </summary>
+    public string CustomGradleVersionUrl
+    {
+        get { return Instance.customGradleVersionUrl;  }
+        set { Instance.customGradleVersionUrl = value; }
+    }
+
+    /// <summary>
+    /// A string to set the custom gradle tools version (ex: com.android.tools.build:gradle:4.2.0)
+    /// </summary>
+    public string CustomGradleToolsVersion
+    {
+        get { return Instance.customGradleToolsVersion;  }
+        set { Instance.customGradleToolsVersion = value; }
     }
 
     /// <summary>

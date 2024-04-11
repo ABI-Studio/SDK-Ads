@@ -23,6 +23,8 @@ MonoBehaviour:
       AndroidID: 288745b102b6b998
     bannerAdUnitID:
       AndroidID: 201f5e401931681c
+    collapsibleBannerAdUnitID:
+      AndroidID: 
     mrecAdUnitID:
       AndroidID: e79c7c6f7270943d
     appOpenAdUnitID:
@@ -37,6 +39,9 @@ MonoBehaviour:
     bannerAdUnitID:
       AndroidID:
       - ca-app-pub-3940256099942544/6300978111
+    collapsibleBannerAdUnitID:
+      AndroidID:
+      - ca-app-pub-3940256099942544/2014213617
     mrecAdUnitID:
       AndroidID:
       - ca-app-pub-3940256099942544/9214589741
@@ -47,5 +52,10 @@ MonoBehaviour:
   interstitialAdsMediationType: 2
   rewardedAdsMediationType: 2
   bannerAdsMediationType: 2
+  bannerAdsPosition: 1
+  isBannerShowingOnStart: 1
+  collapsibleBannerAdsMediationType: 2
+  collapsibleBannerAdsPosition: 1
+  isCollapsibleBannerShowingOnStart: 0
   mrecAdsMediationType: 0
   appOpenAdsMediationType: 0

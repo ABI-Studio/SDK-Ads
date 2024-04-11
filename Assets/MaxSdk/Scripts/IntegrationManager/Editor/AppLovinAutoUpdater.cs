@@ -26,7 +26,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         // TODO: Make this list dynamic.
         public static readonly Dictionary<string, string> MinAdapterVersions = new Dictionary<string, string>()
         {
-            {"ADCOLONY_NETWORK", "android_4.2.3.1_ios_4.3.1.1"},
             {"ADMOB_NETWORK", "android_19.3.0.3_ios_7.65.0.0"},
             {"CHARTBOOST_NETWORK", "android_8.1.0.7_ios_8.2.1.3"},
             {"FACEBOOK_MEDIATE", "android_6.0.0.1_ios_6.0.0.3"},
@@ -38,7 +37,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {"SMAATO_NETWORK", "android_21.5.2.5_ios_21.5.2.3"},
             {"TIKTOK_NETWORK", "android_3.1.0.1.6_ios_3.2.5.1.1"},
             {"UNITY_NETWORK", "android_3.4.8.2_ios_3.4.8.2"},
-            {"VERIZON_NETWORK", "android_1.6.0.5_ios_1.7.1.1"},
             {"VUNGLE_NETWORK", "android_6.7.1.2_ios_6.7.1.3"},
             {"YANDEX_NETWORK", "android_2.170.2_ios_2.18.0.1"}
         };

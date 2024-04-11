@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using AppLovinMax.ThirdParty.MiniJson;
+using AppLovinUserEngagement.Internal;
 
 public class MaxSdkCallbacks : MonoBehaviour
 {
@@ -844,100 +845,6 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
     }
 
-    private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdLoadedEvent;
-    private static Action<string, MaxSdkBase.ErrorInfo> _onCrossPromoAdLoadFailedEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdClickedEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdRevenuePaidEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdExpandedEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdCollapsedEvent;
-
-    public class CrossPromo
-    {
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdLoadedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdLoadedEvent");
-                _onCrossPromoAdLoadedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdLoadedEvent");
-                _onCrossPromoAdLoadedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.ErrorInfo> OnAdLoadFailedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdLoadFailedEvent");
-                _onCrossPromoAdLoadFailedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdLoadFailedEvent");
-                _onCrossPromoAdLoadFailedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdClickedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdClickedEvent");
-                _onCrossPromoAdClickedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdClickedEvent");
-                _onCrossPromoAdClickedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdRevenuePaidEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdRevenuePaidEvent");
-                _onCrossPromoAdRevenuePaidEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdRevenuePaidEvent");
-                _onCrossPromoAdRevenuePaidEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdExpandedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdExpandedEvent");
-                _onCrossPromoAdExpandedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdExpandedEvent");
-                _onCrossPromoAdExpandedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdCollapsedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnCrossPromoAdCollapsedEvent");
-                _onCrossPromoAdCollapsedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnCrossPromoAdCollapsedEvent");
-                _onCrossPromoAdCollapsedEvent -= value;
-            }
-        }
-    }
-
     private static Action<string> _onBannerAdLoadedEvent;
     private static Action<string, int> _onBannerAdLoadFailedEvent;
     private static Action<string> _onBannerAdClickedEvent;
@@ -1320,6 +1227,8 @@ public class MaxSdkCallbacks : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        MaxEventExecutor.InitializeIfNeeded();
     }
 #endif
 
@@ -1332,6 +1241,7 @@ public class MaxSdkCallbacks : MonoBehaviour
             return;
         }
 
+        var keepInBackground = MaxSdkUtils.GetBoolFromDictionary(eventProps, "keepInBackground", false);
         var eventName = MaxSdkUtils.GetStringFromDictionary(eventProps, "name", "");
         if (eventName == "OnInitialCallbackEvent")
         {
@@ -1340,11 +1250,11 @@ public class MaxSdkCallbacks : MonoBehaviour
         else if (eventName == "OnSdkInitializedEvent")
         {
             var sdkConfiguration = MaxSdkBase.SdkConfiguration.Create(eventProps);
-            InvokeEvent(_onSdkInitializedEvent, sdkConfiguration, eventName);
+            InvokeEvent(_onSdkInitializedEvent, sdkConfiguration, eventName, keepInBackground);
         }
         else if (eventName == "OnSdkConsentDialogDismissedEvent")
         {
-            InvokeEvent(_onSdkConsentDialogDismissedEvent, eventName);
+            InvokeEvent(_onSdkConsentDialogDismissedEvent, eventName, keepInBackground);
         }
         else if (eventName == "OnCmpCompletedEvent")
         {
@@ -1358,223 +1268,197 @@ public class MaxSdkCallbacks : MonoBehaviour
             var adUnitIdentifier = MaxSdkUtils.GetStringFromDictionary(eventProps, "adUnitId", "");
             if (eventName == "OnBannerAdLoadedEvent")
             {
-                InvokeEvent(_onBannerAdLoadedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onBannerAdLoadedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onBannerAdLoadedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onBannerAdLoadedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdLoadFailedEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onBannerAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onBannerAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onBannerAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onBannerAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdClickedEvent")
             {
-                InvokeEvent(_onBannerAdClickedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onBannerAdClickedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onBannerAdClickedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onBannerAdClickedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdRevenuePaidEvent")
             {
-                InvokeEvent(_onBannerAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onBannerAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdReviewCreativeIdGeneratedEvent")
             {
                 var adReviewCreativeId = MaxSdkUtils.GetStringFromDictionary(eventProps, "adReviewCreativeId", "");
-                InvokeEvent(_onBannerAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName);
+                InvokeEvent(_onBannerAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdExpandedEvent")
             {
-                InvokeEvent(_onBannerAdExpandedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onBannerAdExpandedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onBannerAdExpandedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onBannerAdExpandedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnBannerAdCollapsedEvent")
             {
-                InvokeEvent(_onBannerAdCollapsedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onBannerAdCollapsedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onBannerAdCollapsedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onBannerAdCollapsedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdLoadedEvent")
             {
-                InvokeEvent(_onMRecAdLoadedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onMRecAdLoadedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onMRecAdLoadedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onMRecAdLoadedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdLoadFailedEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onMRecAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onMRecAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onMRecAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onMRecAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdClickedEvent")
             {
-                InvokeEvent(_onMRecAdClickedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onMRecAdClickedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onMRecAdClickedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onMRecAdClickedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdRevenuePaidEvent")
             {
-                InvokeEvent(_onMRecAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onMRecAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdReviewCreativeIdGeneratedEvent")
             {
                 var adReviewCreativeId = MaxSdkUtils.GetStringFromDictionary(eventProps, "adReviewCreativeId", "");
-                InvokeEvent(_onMRecAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName);
+                InvokeEvent(_onMRecAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdExpandedEvent")
             {
-                InvokeEvent(_onMRecAdExpandedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onMRecAdExpandedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onMRecAdExpandedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onMRecAdExpandedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnMRecAdCollapsedEvent")
             {
-                InvokeEvent(_onMRecAdCollapsedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onMRecAdCollapsedEventV2, adUnitIdentifier, adInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdLoadedEvent")
-            {
-                InvokeEvent(_onCrossPromoAdLoadedEvent, adUnitIdentifier, adInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdLoadFailedEvent")
-            {
-                var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-
-                InvokeEvent(_onCrossPromoAdLoadFailedEvent, adUnitIdentifier, errorInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdClickedEvent")
-            {
-                InvokeEvent(_onCrossPromoAdClickedEvent, adUnitIdentifier, adInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdRevenuePaidEvent")
-            {
-                InvokeEvent(_onCrossPromoAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdExpandedEvent")
-            {
-                InvokeEvent(_onCrossPromoAdExpandedEvent, adUnitIdentifier, adInfo, eventName);
-            }
-            else if (eventName == "OnCrossPromoAdCollapsedEvent")
-            {
-                InvokeEvent(_onCrossPromoAdCollapsedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onMRecAdCollapsedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onMRecAdCollapsedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialLoadedEvent")
             {
-                InvokeEvent(_onInterstitialAdLoadedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onInterstitialAdLoadedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdLoadedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onInterstitialAdLoadedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialLoadFailedEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onInterstitialLoadFailedEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onInterstitialLoadFailedEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onInterstitialAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onInterstitialAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialHiddenEvent")
             {
-                InvokeEvent(_onInterstitialAdHiddenEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onInterstitialAdHiddenEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdHiddenEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onInterstitialAdHiddenEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialDisplayedEvent")
             {
-                InvokeEvent(_onInterstitialAdDisplayedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onInterstitialAdDisplayedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdDisplayedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onInterstitialAdDisplayedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialAdFailedToDisplayEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onInterstitialAdFailedToDisplayEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onInterstitialAdFailedToDisplayEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onInterstitialAdFailedToDisplayEventV2, adUnitIdentifier, errorInfo, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdFailedToDisplayEventV2, adUnitIdentifier, errorInfo, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialClickedEvent")
             {
-                InvokeEvent(_onInterstitialAdClickedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onInterstitialAdClickedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdClickedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onInterstitialAdClickedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialAdRevenuePaidEvent")
             {
-                InvokeEvent(_onInterstitialAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnInterstitialAdReviewCreativeIdGeneratedEvent")
             {
                 var adReviewCreativeId = MaxSdkUtils.GetStringFromDictionary(eventProps, "adReviewCreativeId", "");
-                InvokeEvent(_onInterstitialAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName);
+                InvokeEvent(_onInterstitialAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdLoadedEvent")
             {
-                InvokeEvent(_onAppOpenAdLoadedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdLoadedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdLoadFailedEvent")
             {
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onAppOpenAdLoadFailedEvent, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onAppOpenAdLoadFailedEvent, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdHiddenEvent")
             {
-                InvokeEvent(_onAppOpenAdHiddenEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdHiddenEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdDisplayedEvent")
             {
-                InvokeEvent(_onAppOpenAdDisplayedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdDisplayedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdFailedToDisplayEvent")
             {
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onAppOpenAdFailedToDisplayEvent, adUnitIdentifier, errorInfo, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdFailedToDisplayEvent, adUnitIdentifier, errorInfo, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdClickedEvent")
             {
-                InvokeEvent(_onAppOpenAdClickedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdClickedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnAppOpenAdRevenuePaidEvent")
             {
-                InvokeEvent(_onAppOpenAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onAppOpenAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdLoadedEvent")
             {
-                InvokeEvent(_onRewardedAdLoadedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onRewardedAdLoadedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedAdLoadedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onRewardedAdLoadedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdLoadFailedEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onRewardedAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onRewardedAdLoadFailedEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onRewardedAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onRewardedAdLoadFailedEventV2, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdDisplayedEvent")
             {
-                InvokeEvent(_onRewardedAdDisplayedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onRewardedAdDisplayedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedAdDisplayedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onRewardedAdDisplayedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdHiddenEvent")
             {
-                InvokeEvent(_onRewardedAdHiddenEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onRewardedAdHiddenEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedAdHiddenEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onRewardedAdHiddenEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdClickedEvent")
             {
-                InvokeEvent(_onRewardedAdClickedEvent, adUnitIdentifier, eventName);
-                InvokeEvent(_onRewardedAdClickedEventV2, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedAdClickedEvent, adUnitIdentifier, eventName, keepInBackground);
+                InvokeEvent(_onRewardedAdClickedEventV2, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdRevenuePaidEvent")
             {
-                InvokeEvent(_onRewardedAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdReviewCreativeIdGeneratedEvent")
             {
                 var adReviewCreativeId = MaxSdkUtils.GetStringFromDictionary(eventProps, "adReviewCreativeId", "");
-                InvokeEvent(_onRewardedAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName);
+                InvokeEvent(_onRewardedAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdFailedToDisplayEvent")
             {
                 var errorCode = MaxSdkUtils.GetIntFromDictionary(eventProps, "errorCode", -1);
-                InvokeEvent(_onRewardedAdFailedToDisplayEvent, adUnitIdentifier, errorCode, eventName);
+                InvokeEvent(_onRewardedAdFailedToDisplayEvent, adUnitIdentifier, errorCode, eventName, keepInBackground);
 
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onRewardedAdFailedToDisplayEventV2, adUnitIdentifier, errorInfo, adInfo, eventName);
+                InvokeEvent(_onRewardedAdFailedToDisplayEventV2, adUnitIdentifier, errorInfo, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedAdReceivedRewardEvent")
             {
@@ -1584,45 +1468,45 @@ public class MaxSdkCallbacks : MonoBehaviour
                     Amount = MaxSdkUtils.GetIntFromDictionary(eventProps, "rewardAmount", 0)
                 };
 
-                InvokeEvent(_onRewardedAdReceivedRewardEvent, adUnitIdentifier, reward, eventName);
-                InvokeEvent(_onRewardedAdReceivedRewardEventV2, adUnitIdentifier, reward, adInfo, eventName);
+                InvokeEvent(_onRewardedAdReceivedRewardEvent, adUnitIdentifier, reward, eventName, keepInBackground);
+                InvokeEvent(_onRewardedAdReceivedRewardEventV2, adUnitIdentifier, reward, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdLoadedEvent")
             {
-                InvokeEvent(_onRewardedInterstitialAdLoadedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdLoadedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdLoadFailedEvent")
             {
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
 
-                InvokeEvent(_onRewardedInterstitialAdLoadFailedEvent, adUnitIdentifier, errorInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdLoadFailedEvent, adUnitIdentifier, errorInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdDisplayedEvent")
             {
-                InvokeEvent(_onRewardedInterstitialAdDisplayedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdDisplayedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdHiddenEvent")
             {
-                InvokeEvent(_onRewardedInterstitialAdHiddenEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdHiddenEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdClickedEvent")
             {
-                InvokeEvent(_onRewardedInterstitialAdClickedEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdClickedEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdRevenuePaidEvent")
             {
-                InvokeEvent(_onRewardedInterstitialAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdRevenuePaidEvent, adUnitIdentifier, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdReviewCreativeIdGeneratedEvent")
             {
                 var adReviewCreativeId = MaxSdkUtils.GetStringFromDictionary(eventProps, "adReviewCreativeId", "");
-                InvokeEvent(_onRewardedInterstitialAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdReviewCreativeIdGeneratedEvent, adUnitIdentifier, adReviewCreativeId, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdFailedToDisplayEvent")
             {
                 var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
 
-                InvokeEvent(_onRewardedInterstitialAdFailedToDisplayEvent, adUnitIdentifier, errorInfo, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdFailedToDisplayEvent, adUnitIdentifier, errorInfo, adInfo, eventName, keepInBackground);
             }
             else if (eventName == "OnRewardedInterstitialAdReceivedRewardEvent")
             {
@@ -1632,7 +1516,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                     Amount = MaxSdkUtils.GetIntFromDictionary(eventProps, "rewardAmount", 0)
                 };
 
-                InvokeEvent(_onRewardedInterstitialAdReceivedRewardEvent, adUnitIdentifier, reward, adInfo, eventName);
+                InvokeEvent(_onRewardedInterstitialAdReceivedRewardEvent, adUnitIdentifier, reward, adInfo, eventName, keepInBackground);
             }
             else
             {
@@ -1650,36 +1534,96 @@ public class MaxSdkCallbacks : MonoBehaviour
     }
 #endif
 
-    private static void InvokeEvent(Action evt, string eventName)
+    private static void InvokeEvent(Action evt, string eventName, bool keepInBackground)
     {
         if (!CanInvokeEvent(evt)) return;
 
         MaxSdkLogger.UserDebug("Invoking event: " + eventName);
-        evt();
+        if (keepInBackground)
+        {
+            try
+            {
+                evt();
+            }
+            catch (Exception exception)
+            {
+                MaxSdkLogger.UserError("Caught exception in publisher event: " + eventName + ", exception: " + exception);
+                Debug.LogException(exception);
+            }
+        }
+        else
+        {
+            MaxEventExecutor.ExecuteOnMainThread(evt, eventName);
+        }
     }
 
-    private static void InvokeEvent<T>(Action<T> evt, T param, string eventName)
+    private static void InvokeEvent<T>(Action<T> evt, T param, string eventName, bool keepInBackground)
     {
         if (!CanInvokeEvent(evt)) return;
 
         MaxSdkLogger.UserDebug("Invoking event: " + eventName + ". Param: " + param);
-        evt(param);
+        if (keepInBackground)
+        {
+            try
+            {
+                evt(param);
+            }
+            catch (Exception exception)
+            {
+                MaxSdkLogger.UserError("Caught exception in publisher event: " + eventName + ", exception: " + exception);
+                Debug.LogException(exception);
+            }
+        }
+        else
+        {
+            MaxEventExecutor.ExecuteOnMainThread(() => evt(param), eventName);
+        }
     }
 
-    private static void InvokeEvent<T1, T2>(Action<T1, T2> evt, T1 param1, T2 param2, string eventName)
+    private static void InvokeEvent<T1, T2>(Action<T1, T2> evt, T1 param1, T2 param2, string eventName, bool keepInBackground)
     {
         if (!CanInvokeEvent(evt)) return;
 
         MaxSdkLogger.UserDebug("Invoking event: " + eventName + ". Params: " + param1 + ", " + param2);
-        evt(param1, param2);
+        if (keepInBackground)
+        {
+            try
+            {
+                evt(param1, param2);
+            }
+            catch (Exception exception)
+            {
+                MaxSdkLogger.UserError("Caught exception in publisher event: " + eventName + ", exception: " + exception);
+                Debug.LogException(exception);
+            }
+        }
+        else
+        {
+            MaxEventExecutor.ExecuteOnMainThread(() => evt(param1, param2), eventName);
+        }
     }
 
-    private static void InvokeEvent<T1, T2, T3>(Action<T1, T2, T3> evt, T1 param1, T2 param2, T3 param3, string eventName)
+    private static void InvokeEvent<T1, T2, T3>(Action<T1, T2, T3> evt, T1 param1, T2 param2, T3 param3, string eventName, bool keepInBackground)
     {
         if (!CanInvokeEvent(evt)) return;
 
         MaxSdkLogger.UserDebug("Invoking event: " + eventName + ". Params: " + param1 + ", " + param2 + ", " + param3);
-        evt(param1, param2, param3);
+        if (keepInBackground)
+        {
+            try
+            {
+                evt(param1, param2, param3);
+            }
+            catch (Exception exception)
+            {
+                MaxSdkLogger.UserError("Caught exception in publisher event: " + eventName + ", exception: " + exception);
+                Debug.LogException(exception);
+            }
+        }
+        else
+        {
+            MaxEventExecutor.ExecuteOnMainThread(() => evt(param1, param2, param3), eventName);
+        }
     }
 
     private static bool CanInvokeEvent(Delegate evt)
@@ -1767,14 +1711,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         _onMRecAdReviewCreativeIdGeneratedEvent = null;
         _onMRecAdExpandedEventV2 = null;
         _onMRecAdCollapsedEventV2 = null;
-
-        _onCrossPromoAdLoadedEvent = null;
-        _onCrossPromoAdLoadFailedEvent = null;
-        _onCrossPromoAdClickedEvent = null;
-        _onCrossPromoAdRevenuePaidEvent = null;
-        _onCrossPromoAdExpandedEvent = null;
-        _onCrossPromoAdCollapsedEvent = null;
-
+        
         _onBannerAdLoadedEvent = null;
         _onBannerAdLoadFailedEvent = null;
         _onBannerAdClickedEvent = null;

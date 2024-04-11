@@ -544,7 +544,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             return outputLines;
         }
 
-        private static string GetFormattedBuildScriptLine(string buildScriptLine)
+        public static string GetFormattedBuildScriptLine(string buildScriptLine)
         {
 #if UNITY_2022_2_OR_NEWER
             return "        "

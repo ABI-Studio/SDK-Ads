@@ -6,12 +6,13 @@ using UnityEngine;
 [System.Serializable]
 public class MaxAdSetup
 {
-    [SerializeField]public AdUnitID sdkKey;
-    [SerializeField]public AdUnitID interstitialAdUnitID;
-    [SerializeField]public AdUnitID rewardedAdUnitID;
-    [SerializeField]public AdUnitID bannerAdUnitID;
-    [SerializeField]public AdUnitID mrecAdUnitID;
-    [SerializeField]public AdUnitID appOpenAdUnitID;
+    [SerializeField]private AdUnitID sdkKey;
+    [SerializeField]private AdUnitID interstitialAdUnitID;
+    [SerializeField]private AdUnitID rewardedAdUnitID;
+    [SerializeField]private AdUnitID bannerAdUnitID;
+    [SerializeField]private AdUnitID collapsibleBannerAdUnitID;
+    [SerializeField]private AdUnitID mrecAdUnitID;
+    [SerializeField]private AdUnitID appOpenAdUnitID;
 
     public string SDKKey
     {
@@ -35,7 +36,13 @@ public class MaxAdSetup
         get => bannerAdUnitID.ID;
         set => bannerAdUnitID.ID = value;
     }
-
+    
+    public string CollapsibleBannerAdUnitID
+    {
+        get => collapsibleBannerAdUnitID.ID;
+        set => collapsibleBannerAdUnitID.ID = value;
+    }
+    
     public string MrecAdUnitID
     {
         get => mrecAdUnitID.ID;

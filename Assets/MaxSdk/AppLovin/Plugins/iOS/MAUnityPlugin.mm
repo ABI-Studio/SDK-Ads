@@ -15,13 +15,13 @@
 @property (assign, readonly, getter=al_isValidString) BOOL al_validString;
 @end
 
-UIView* UnityGetGLView();
-
 // When native code plugin is implemented in .mm / .cpp file, then functions
 // should be surrounded with extern "C" block to conform C function naming rules
 extern "C"
 {
     static NSString *const TAG = @"MAUnityPlugin";
+
+    UIView* UnityGetGLView();
     
     static ALSdk *_sdk;
     static MAUnityAdManager *_adManager;
@@ -52,6 +52,18 @@ extern "C"
     static const char * cStringCopy(NSString *string);
     // Helper method to log errors
     void logUninitializedAccessError(const char *callingMethod);
+
+    int getConsentStatusValue(NSNumber *consentStatus)
+    {
+        if ( consentStatus )
+        {
+            return consentStatus.intValue;
+        }
+        else
+        {
+            return -1;
+        }
+    }
     
     bool isPluginInitialized()
     {
@@ -785,51 +797,6 @@ extern "C"
         
         return cStringCopy([_adManager mrecLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
     }
-
-    void _MaxCreateCrossPromoAd(const char *adUnitIdentifier, const float x, const float y, const float width, const float height, const float rotation)
-    {
-        if (!isPluginInitialized()) return;
-        
-        [_adManager createCrossPromoAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) x: x y: y width: width height: height rotation: rotation];
-    }
-
-    void _MaxSetCrossPromoAdPlacement(const char *adUnitIdentifier, const char *placement)
-    {
-        [_adManager setCrossPromoAdPlacement: NSSTRING(placement) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
-    }
-
-    void _MaxUpdateCrossPromoAdPosition(const char *adUnitIdentifier, const float x, const float y, const float width, const float height, const float rotation)
-    {
-        [_adManager updateCrossPromoAdPositionForAdUnitIdentifier: NSSTRING(adUnitIdentifier) x: x y: y width: width height: height rotation: rotation];
-    }
-
-    void _MaxShowCrossPromoAd(const char *adUnitIdentifier)
-    {
-        if (!isPluginInitialized()) return;
-        
-        [_adManager showCrossPromoAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
-    }
-
-    void _MaxDestroyCrossPromoAd(const char *adUnitIdentifier)
-    {
-        if (!isPluginInitialized()) return;
-        
-        [_adManager destroyCrossPromoAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
-    }
-
-    void _MaxHideCrossPromoAd(const char *adUnitIdentifier)
-    {
-        if (!isPluginInitialized()) return;
-        
-        [_adManager hideCrossPromoAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
-    }
-
-    const char * _MaxGetCrossPromoAdLayout(const char *adUnitIdentifier)
-    {
-        if (!isPluginInitialized()) return cStringCopy(@"");
-        
-        return cStringCopy([_adManager crossPromoAdLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
-    }
     
     void _MaxLoadInterstitial(const char *adUnitIdentifier)
     {
@@ -1060,30 +1027,28 @@ extern "C"
         return !ALUtils.simulator;
     }
 
-    int _MaxGetTcfConsentStatus(int vendorIdentifier)
+    int _MaxGetTcfVendorConsentStatus(int vendorIdentifier)
     {
-        NSNumber *consentStatus = [ALUtils tcfConsentStatusForVendorIdentifier: vendorIdentifier];
-        if ( consentStatus )
-        {
-            return consentStatus.intValue;
-        }
-        else
-        {
-            return -1;
-        }
+        NSNumber *consentStatus = [ALPrivacySettings tcfVendorConsentStatusForIdentifier: vendorIdentifier];
+        return getConsentStatusValue(consentStatus);
     }
 
     int _MaxGetAdditionalConsentStatus(int atpIdentifier)
     {
-        NSNumber *consentStatus = [ALUtils additionalConsentStatusForATPIdentifier: atpIdentifier];
-        if ( consentStatus )
-        {
-            return consentStatus.intValue;
-        }
-       else
-       {
-           return -1;
-       }
+        NSNumber *consentStatus = [ALPrivacySettings additionalConsentStatusForIdentifier: atpIdentifier];
+        return getConsentStatusValue(consentStatus);
+    }
+
+    int _MaxGetPurposeConsentStatus(int purposeIdentifier)
+    {
+        NSNumber *consentStatus = [ALPrivacySettings purposeConsentStatusForIdentifier: purposeIdentifier];
+        return getConsentStatusValue(consentStatus);
+    }
+
+    int _MaxGetSpecialFeatureOptInStatus(int specialFeatureIdentifier)
+    {
+        NSNumber *consentStatus = [ALPrivacySettings specialFeatureOptInStatusForIdentifier: specialFeatureIdentifier];
+        return getConsentStatusValue(consentStatus);
     }
     
     static const char * cStringCopy(NSString *string)
@@ -1228,6 +1193,13 @@ extern "C"
                 _extraParametersToSet[stringKey] = NSSTRING(value);
             }
         }
+    }
+
+    int * _MaxGetSafeAreaInsets()
+    {
+        UIEdgeInsets safeAreaInsets = UnityGetGLView().safeAreaInsets;
+        static int insets[4] = {(int) safeAreaInsets.left, (int) safeAreaInsets.top, (int) safeAreaInsets.right, (int) safeAreaInsets.bottom};
+        return insets;
     }
     
     void _MaxShowCmpForExistingUser()

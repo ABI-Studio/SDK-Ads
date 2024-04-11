@@ -121,6 +121,7 @@ PlayerSettings:
   switchNVNOtherPoolsGranularity: 16777216
   switchNVNMaxPublicTextureIDCount: 0
   switchNVNMaxPublicSamplerIDCount: 0
+  switchMaxWorkerMultiple: 8
   stadiaPresentMode: 0
   stadiaTargetFramerate: 0
   vulkanNumSwapchainBuffers: 3
@@ -155,7 +156,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.abi.zoo.fashion
+    Android: com.abi.revive.man
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -766,7 +767,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: UNITY_AD_MAX
+    Android: UNITY_AD_MAX;ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;UNITY_APPSFLYER;UNITY_AD_ADMOB
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

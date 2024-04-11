@@ -48,34 +48,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsCheatAds: 0
-  m_SDKSetup: {fileID: 0}
+  m_SDKSetup: {fileID: 11400000, guid: 249da539afb5e6d4ebc977a0cfeea499, type: 2}
+  m_MainAdsMediationType: 2
   m_RewardVideoAdsConfig:
     adsType: 2
-    adsMediationType: 0
+    adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
   m_InterstitialAdsConfig:
     adsType: 1
-    adsMediationType: 0
+    adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
   m_BannerAdsConfig:
     adsType: 0
-    adsMediationType: 0
+    adsMediationType: 2
+    isActive: 1
+    maxReloadTime: 3
+    adsMediations: []
+  m_CollapsibleBannerAdsConfig:
+    adsType: 0
+    adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
   m_MRecAdsConfig:
     adsType: 0
-    adsMediationType: 1
+    adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
   m_AppOpenAdsConfig:
     adsType: 0
-    adsMediationType: 1
+    adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
@@ -138,6 +145,8 @@ MonoBehaviour:
       AndroidID: 
     bannerAdUnitID:
       AndroidID: 
+    collapsibleBannerAdUnitID:
+      AndroidID: 
     mrecAdUnitID:
       AndroidID: 
     appOpenAdUnitID:
@@ -191,16 +200,25 @@ MonoBehaviour:
   m_AndroidAdmobID_AppId: 
   m_AdmobAdSetup:
     interstitialAdUnitID:
-      AndroidID: []
+      AndroidID:
+      - ca-app-pub-3940256099942544/1033173712
     rewardedAdUnitID:
-      AndroidID: []
+      AndroidID:
+      - ca-app-pub-3940256099942544/5224354917
     bannerAdUnitID:
-      AndroidID: []
+      AndroidID:
+      - ca-app-pub-3940256099942544/6300978111
+    collapsibleBannerAdUnitID:
+      AndroidID:
+      - ca-app-pub-3940256099942544/2014213617
     mrecAdUnitID:
       AndroidID: []
     appOpenAdUnitID:
       AndroidID: []
   m_BannerPosition: 0
+  IsBannerShowingOnStart: 1
+  m_CollapsibleBannerPosition: 1
+  IsCollapsibleBannerShowingOnStart: 1
 --- !u!1 &8353138578966223628
 GameObject:
   m_ObjectHideFlags: 0

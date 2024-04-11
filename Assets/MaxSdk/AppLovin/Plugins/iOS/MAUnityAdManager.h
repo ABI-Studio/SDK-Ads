@@ -49,14 +49,6 @@ typedef void (*ALUnityBackgroundCallback)(const char* args);
 - (void)updateMRecPosition:(CGFloat)xOffset y:(CGFloat)yOffset forAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
 - (NSString *)mrecLayoutForAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
 
-- (void)createCrossPromoAdWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier x:(CGFloat)xOffset y:(CGFloat)yOffset width:(CGFloat)width height:(CGFloat)height rotation:(CGFloat)rotation;
-- (void)setCrossPromoAdPlacement:(nullable NSString *)placement forAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
-- (void)showCrossPromoAdWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
-- (void)destroyCrossPromoAdWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
-- (void)hideCrossPromoAdWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
-- (void)updateCrossPromoAdPositionForAdUnitIdentifier:(nullable NSString *)adUnitIdentifier x:(CGFloat)xOffset y:(CGFloat)yOffset width:(CGFloat)width height:(CGFloat)height rotation:(CGFloat)rotation;
-- (NSString *)crossPromoAdLayoutForAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
-
 - (void)loadInterstitialWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
 - (BOOL)isInterstitialReadyWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier;
 - (void)showInterstitialWithAdUnitIdentifier:(nullable NSString *)adUnitIdentifier placement:(nullable NSString *)placement customData:(nullable NSString *)customData;

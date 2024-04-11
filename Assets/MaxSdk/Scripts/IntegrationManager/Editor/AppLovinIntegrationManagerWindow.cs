@@ -35,6 +35,9 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private const string qualityServiceRequiresGradleBuildErrorMsg = "AppLovin Quality Service integration via AppLovin Integration Manager requires Custom Gradle Template enabled or Unity 2018.2 or higher.\n" +
                                                                          "If you would like to continue using your existing setup, please add Quality Service Plugin to your build.gradle manually.";
 
+        private const string customGradleVersionTooltip = "To set the version to 6.9.3, set the field to: https://services.gradle.org/distributions/gradle-6.9.3-bin.zip";
+        private const string customGradleToolsVersionTooltip = "To set the version to 4.2.0, set the field to: 4.2.0";
+
         private readonly string[] termsFlowPlatforms = new string[3] {"Both", "Android", "iOS"};
         private readonly string[] debugUserGeographies = new string[2] {"Not Set", "GDPR"};
 
@@ -142,6 +145,26 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         }
 
         private void OnEnable()
+        {
+            // Script reloads can cause AppLovinSettings.Instance to be null for one frame,
+            // so we load the Integration Manager on the following frame
+            if (AppLovinSettings.Instance == null)
+            {
+                AppLovinEditorCoroutine.StartCoroutine(WaitForNextFrameForEnable());
+            }
+            else
+            {
+                OnWindowEnabled();
+            }
+        }
+
+        private IEnumerator WaitForNextFrameForEnable()
+        {
+            yield return new WaitForEndOfFrame();
+            OnWindowEnabled();
+        }
+
+        private void OnWindowEnabled()
         {
             AppLovinIntegrationManager.downloadPluginProgressCallback = OnDownloadPluginProgress;
 
@@ -431,7 +454,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private void DrawNetworkDetailRow(Network network)
         {
             string action;
-            var currentVersion = network.CurrentVersions.Unity;
+            var currentVersion = network.CurrentVersions != null ? network.CurrentVersions.Unity : "";
             var latestVersion = network.LatestVersions.Unity;
             bool isActionEnabled;
             bool isInstalled;
@@ -621,11 +644,12 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             GUILayout.EndHorizontal();
         }
 
-        private string DrawTextField(string fieldTitle, string text, GUILayoutOption labelWidth, GUILayoutOption textFieldWidthOption = null, bool isTextFieldEditable = true)
+        private string DrawTextField(string fieldTitle, string text, GUILayoutOption labelWidth, GUILayoutOption textFieldWidthOption = null, bool isTextFieldEditable = true, string tooltip = "")
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(4);
-            EditorGUILayout.LabelField(new GUIContent(fieldTitle), labelWidth);
+            var guiContent = MaxSdkUtils.IsValidString(tooltip) ? new GUIContent(fieldTitle, tooltip) : new GUIContent(fieldTitle);
+            EditorGUILayout.LabelField(guiContent, labelWidth);
             GUILayout.Space(4);
             if (isTextFieldEditable)
             {
@@ -687,6 +711,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 AppLovinInternalSettings.Instance.ConsentFlowEnabled = true;
                 AppLovinSettings.Instance.ConsentFlowEnabled = false;
             }
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
@@ -750,7 +775,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 Application.OpenURL(userTrackingUsageDescriptionDocsLink);
             }
 
-
             GUILayout.Space(4);
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
@@ -782,6 +806,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {
                 Application.OpenURL(documentationTermsAndPrivacyPolicyFlow);
             }
+
             GUILayout.Space(4);
             GUILayout.EndHorizontal();
 
@@ -880,6 +905,9 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 var verboseLoggingEnabled = DrawOtherSettingsToggle(EditorPrefs.GetBool(MaxSdkLogger.KeyVerboseLoggingEnabled, false), "  Enable Verbose Logging");
                 EditorPrefs.SetBool(MaxSdkLogger.KeyVerboseLoggingEnabled, verboseLoggingEnabled);
                 GUILayout.Space(5);
+                AppLovinSettings.Instance.CustomGradleVersionUrl = DrawTextField("Custom Gradle Version URL", AppLovinSettings.Instance.CustomGradleVersionUrl, GUILayout.Width(privacySettingLabelWidth), privacySettingFieldWidthOption, tooltip: customGradleVersionTooltip);
+                AppLovinSettings.Instance.CustomGradleToolsVersion = DrawTextField("Custom Gradle Tools Version", AppLovinSettings.Instance.CustomGradleToolsVersion, GUILayout.Width(privacySettingLabelWidth), privacySettingFieldWidthOption, tooltip: customGradleToolsVersionTooltip);
+                EditorGUILayout.HelpBox("This will overwrite the gradle build tools version in your base gradle template.", MessageType.Info);
             }
 
             GUILayout.Space(5);

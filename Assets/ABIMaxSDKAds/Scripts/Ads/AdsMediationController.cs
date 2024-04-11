@@ -53,6 +53,32 @@ namespace SDK {
         }
         #endregion
 
+        #region  Collapsible Banner
+
+        protected UnityAction m_CollapsibleBannerAdLoadedSuccessCallback;
+        protected UnityAction m_CollapsibleBannerAdLoadedFailCallback;
+        protected UnityAction m_CollapsibleBannerAdsCollapsedCallback;
+        protected UnityAction m_CollapsibleBannerAdsExpandedCallback;
+        public virtual void InitCollapsibleBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback) {
+            m_CollapsibleBannerAdLoadedSuccessCallback = bannerLoadedSuccessCallback;
+            m_CollapsibleBannerAdLoadedFailCallback = bannerAdLoadedFailCallback;
+            m_CollapsibleBannerAdsCollapsedCallback = bannerAdsCollapsedCallback;
+            m_CollapsibleBannerAdsExpandedCallback = bannerAdsExpandedCallback;
+        }
+        public virtual void RequestCollapsibleBannerAds(bool isOpenOnStart) {
+        }
+        public virtual void ShowCollapsibleBannerAds() {
+        }
+        public virtual void HideCollapsibleBannerAds() {
+        }
+        public virtual void DestroyCollapsibleBannerAds() {
+        }
+        public virtual bool IsCollapsibleBannerLoaded() {
+            return false;
+        }
+
+        #endregion
+
         #region Interstitial Ads
         protected UnityAction m_InterstitialAdCloseCallback;
         protected UnityAction m_InterstitialAdLoadSuccessCallback;
