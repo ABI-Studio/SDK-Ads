@@ -53,13 +53,8 @@ namespace SDK
 
         public AdsMediationType m_MainAdsMediationType = AdsMediationType.MAX;
 
-        public AdsConfig m_RewardVideoAdsConfig;
-        public AdsConfig m_InterstitialAdsConfig;
-        public AdsConfig m_BannerAdsConfig;
-        public AdsConfig m_CollapsibleBannerAdsConfig;
-        public AdsConfig m_MRecAdsConfig;
-        public AdsConfig m_AppOpenAdsConfig;
-
+        public List<AdsConfig> m_AdsConfigs = new List<AdsConfig>();
+        
         public List<AdsMediationController> m_AdsMediationControllers = new List<AdsMediationController>();
 
         private void Awake()
@@ -143,18 +138,11 @@ namespace SDK
 
         private void InitConfig()
         {
-            m_InterstitialAdsConfig.Init(
-                GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.INTERSTITIAL)), OnAdRevenuePaidEvent);
-            m_RewardVideoAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.REWARDED)),
-                OnAdRevenuePaidEvent);
-            m_BannerAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.BANNER)),
-                OnAdRevenuePaidEvent);
-            m_CollapsibleBannerAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.COLLAPSIBLE_BANNER)),
-                OnAdRevenuePaidEvent);
-            m_MRecAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.MREC)),
-                OnAdRevenuePaidEvent);
-            m_AppOpenAdsConfig.Init(GetAdsMediationController(m_SDKSetup.GetAdsMediationType(AdsType.APP_OPEN)),
-                OnAdRevenuePaidEvent);
+            foreach (AdsConfig adsConfig in m_AdsConfigs)
+            {
+                AdsMediationType adsMediationType = m_SDKSetup.GetAdsMediationType(adsConfig.adsType);
+                adsConfig.Init(GetAdsMediationController(adsMediationType), OnAdRevenuePaidEvent);
+            }
         }
 
         private void InitAdsMediation()
@@ -232,52 +220,48 @@ namespace SDK
 
             IsInitedAdsType = true;
         }
+        
+        public AdsConfig GetAdsConfig(AdsType adsType)
+        {
+            return m_AdsConfigs.Find(x => x.adsType == adsType);
+        }
 
         #region EditorUpdate
 
         public void UpdateAdsMediationConfig()
         {
             m_MainAdsMediationType = m_SDKSetup.adsMediationType;
-            m_RewardVideoAdsConfig.adsMediationType = m_SDKSetup.rewardedAdsMediationType;
-            m_InterstitialAdsConfig.adsMediationType = m_SDKSetup.interstitialAdsMediationType;
-            m_BannerAdsConfig.adsMediationType = m_SDKSetup.bannerAdsMediationType;
-            m_CollapsibleBannerAdsConfig.adsMediationType = m_SDKSetup.collapsibleBannerAdsMediationType;
-            m_MRecAdsConfig.adsMediationType = m_SDKSetup.mrecAdsMediationType;
-            m_AppOpenAdsConfig.adsMediationType = m_SDKSetup.appOpenAdsMediationType;
+            foreach (AdsConfig adsConfig in m_AdsConfigs)
+            {
+                AdsMediationType adsMediationType = m_SDKSetup.GetAdsMediationType(adsConfig.adsType);
+                adsConfig.adsMediationType = adsMediationType;
+            }
             UpdateMaxMediation();
             UpdateAdmobMediation();
         }
 
         private void UpdateMaxMediation()
         {
-            MaxMediationController maxMediationController =
-                GetAdsMediationController(AdsMediationType.MAX) as MaxMediationController;
+            const AdsMediationType adsMediationType = AdsMediationType.MAX;
+            MaxMediationController maxMediationController = GetAdsMediationController(adsMediationType) as MaxMediationController;
             if (maxMediationController == null) return;
-            if (m_SDKSetup.adsMediationType == AdsMediationType.MAX)
+            if (m_SDKSetup.adsMediationType == adsMediationType)
             {
                 maxMediationController.m_MaxAdConfig.SDKKey = m_SDKSetup.maxAdsSetup.SDKKey;
             }
 
-            maxMediationController.m_MaxAdConfig.InterstitialAdUnitID =
-                m_SDKSetup.interstitialAdsMediationType == AdsMediationType.MAX
-                    ? m_SDKSetup.maxAdsSetup.InterstitialAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.InterstitialAdUnitID = m_SDKSetup.interstitialAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.InterstitialAdUnitID : "";
             
-            maxMediationController.m_MaxAdConfig.RewardedAdUnitID =
-                m_SDKSetup.rewardedAdsMediationType == AdsMediationType.MAX
-                    ? m_SDKSetup.maxAdsSetup.RewardedAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.RewardedAdUnitID = m_SDKSetup.rewardedAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.RewardedAdUnitID : "";
             
-            maxMediationController.m_MaxAdConfig.BannerAdUnitID =
-                m_SDKSetup.bannerAdsMediationType == AdsMediationType.MAX ? m_SDKSetup.maxAdsSetup.BannerAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.BannerAdUnitID = m_SDKSetup.bannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.BannerAdUnitID : "";
             
-            maxMediationController.m_MaxAdConfig.CollapsibleBannerAdUnitID =
-                m_SDKSetup.collapsibleBannerAdsMediationType == AdsMediationType.MAX ? m_SDKSetup.maxAdsSetup.CollapsibleBannerAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.CollapsibleBannerAdUnitID = m_SDKSetup.collapsibleBannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.CollapsibleBannerAdUnitID : "";
             
-            maxMediationController.m_MaxAdConfig.MrecAdUnitID = m_SDKSetup.mrecAdsMediationType == AdsMediationType.MAX
-                ? m_SDKSetup.maxAdsSetup.MrecAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.MrecAdUnitID = m_SDKSetup.mrecAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.MrecAdUnitID : "";
             
-            maxMediationController.m_MaxAdConfig.AppOpenAdUnitID =
-                m_SDKSetup.appOpenAdsMediationType == AdsMediationType.MAX
-                    ? m_SDKSetup.maxAdsSetup.AppOpenAdUnitID : "";
+            maxMediationController.m_MaxAdConfig.AppOpenAdUnitID = m_SDKSetup.appOpenAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.AppOpenAdUnitID : "";
+            
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(maxMediationController);
             Debug.Log("Update Max Mediation Done");
@@ -286,12 +270,13 @@ namespace SDK
 
         private void UpdateAdmobMediation()
         {
+            const AdsMediationType adsMediationType = AdsMediationType.ADMOB;
             AdmobMediationController admobMediationController =
-                GetAdsMediationController(AdsMediationType.ADMOB) as AdmobMediationController;
+                GetAdsMediationController(adsMediationType) as AdmobMediationController;
             if (admobMediationController == null) return;
-            if (m_SDKSetup.interstitialAdsMediationType == AdsMediationType.ADMOB)
+            if (m_SDKSetup.interstitialAdsMediationType == adsMediationType)
             {
-                m_MainAdsMediationType = AdsMediationType.ADMOB;
+                m_MainAdsMediationType = adsMediationType;
                 admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList =
                     m_SDKSetup.admobAdsSetup.InterstitialAdUnitIDList;
             }
@@ -300,34 +285,30 @@ namespace SDK
                 admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList = new List<string>();
             }
             
-            admobMediationController.m_AdmobAdSetup.RewardedAdUnitIDList =
-                m_SDKSetup.rewardedAdsMediationType == AdsMediationType.ADMOB
-                    ? m_SDKSetup.admobAdsSetup.RewardedAdUnitIDList
-                    : new List<string>();
+            admobMediationController.m_AdmobAdSetup.RewardedAdUnitIDList = m_SDKSetup.rewardedAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.RewardedAdUnitIDList : new List<string>();
+
+            {
+                admobMediationController.m_AdmobAdSetup.BannerAdUnitIDList =
+                    m_SDKSetup.bannerAdsMediationType == adsMediationType
+                        ? m_SDKSetup.admobAdsSetup.BannerAdUnitIDList
+                        : new List<string>();
+                admobMediationController.IsBannerShowingOnStart = m_SDKSetup.isBannerShowingOnStart;
+                admobMediationController.m_BannerPosition = m_SDKSetup.bannerAdsPosition;
+            }
+
+            {
+                admobMediationController.m_AdmobAdSetup.CollapsibleBannerAdUnitIDList =
+                    m_SDKSetup.collapsibleBannerAdsMediationType == adsMediationType
+                        ? m_SDKSetup.admobAdsSetup.CollapsibleBannerAdUnitIDList
+                        : new List<string>();
+                admobMediationController.IsCollapsibleBannerShowingOnStart =
+                    m_SDKSetup.isCollapsibleBannerShowingOnStart;
+                admobMediationController.m_CollapsibleBannerPosition = m_SDKSetup.collapsibleBannerAdsPosition;
+            }
             
-            admobMediationController.m_AdmobAdSetup.BannerAdUnitIDList =
-                m_SDKSetup.bannerAdsMediationType == AdsMediationType.ADMOB
-                    ? m_SDKSetup.admobAdsSetup.BannerAdUnitIDList
-                    : new List<string>();
-            admobMediationController.IsBannerShowingOnStart = m_SDKSetup.isBannerShowingOnStart;
-            admobMediationController.m_BannerPosition = m_SDKSetup.bannerAdsPosition;
+            admobMediationController.m_AdmobAdSetup.MrecAdUnitIDList = m_SDKSetup.mrecAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.MrecAdUnitIDList : new List<string>();
             
-            admobMediationController.m_AdmobAdSetup.CollapsibleBannerAdUnitIDList =
-                m_SDKSetup.collapsibleBannerAdsMediationType == AdsMediationType.ADMOB
-                    ? m_SDKSetup.admobAdsSetup.CollapsibleBannerAdUnitIDList
-                    : new List<string>();
-            admobMediationController.IsCollapsibleBannerShowingOnStart = m_SDKSetup.isCollapsibleBannerShowingOnStart;
-            admobMediationController.m_CollapsibleBannerPosition = m_SDKSetup.collapsibleBannerAdsPosition;
-            
-            admobMediationController.m_AdmobAdSetup.MrecAdUnitIDList =
-                m_SDKSetup.mrecAdsMediationType == AdsMediationType.ADMOB
-                    ? m_SDKSetup.admobAdsSetup.MrecAdUnitIDList
-                    : new List<string>();
-            
-            admobMediationController.m_AdmobAdSetup.AppOpenAdUnitIDList =
-                m_SDKSetup.appOpenAdsMediationType == AdsMediationType.ADMOB
-                    ? m_SDKSetup.admobAdsSetup.AppOpenAdUnitIDList
-                    : new List<string>();
+            admobMediationController.m_AdmobAdSetup.AppOpenAdUnitIDList = m_SDKSetup.appOpenAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.AppOpenAdUnitIDList : new List<string>();
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(admobMediationController);
             Debug.Log("Update Admob Mediation Done");
@@ -337,6 +318,7 @@ namespace SDK
         #endregion
 
         #region Interstitial
+        private AdsConfig InterstitialAdsConfig => GetAdsConfig(AdsType.INTERSTITIAL);
 
         private UnityAction m_InterstitialAdCloseCallback;
         private UnityAction m_InterstitialAdLoadSuccessCallback;
@@ -348,9 +330,9 @@ namespace SDK
         {
             if (adsMediationType != m_SDKSetup.interstitialAdsMediationType) return;
             Debug.Log("Setup Interstitial");
-            m_InterstitialAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.INTERSTITIAL);
+            InterstitialAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.INTERSTITIAL);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.INTERSTITIAL)) return;
-            foreach (AdsMediationController t in m_InterstitialAdsConfig.adsMediations)
+            foreach (AdsMediationController t in InterstitialAdsConfig.adsMediations)
             {
                 t.InitInterstitialAd(
                     OnInterstitialAdClosed,
@@ -415,7 +397,7 @@ namespace SDK
 
         private void OnInterstitialAdSuccessToLoad()
         {
-            m_InterstitialAdsConfig.RefreshLoadAds();
+            InterstitialAdsConfig.RefreshLoadAds();
             m_InterstitialAdLoadSuccessCallback?.Invoke();
             ABIAnalyticsManager.Instance.TrackAdsInterstitial_LoadedSuccess();
         }
@@ -435,7 +417,7 @@ namespace SDK
 
         private void OnInterstitialAdShowFail()
         {
-            m_InterstitialAdsConfig.MarkReloadFail();
+            InterstitialAdsConfig.MarkReloadFail();
             m_InterstitialAdShowFailCallback?.Invoke();
             ABIAnalyticsManager.Instance.TrackAdsInterstitial_ShowFail();
         }
@@ -457,6 +439,7 @@ namespace SDK
 
         #region Banner Ads
 
+        private AdsConfig BannerAdsConfig => GetAdsConfig(AdsType.BANNER);
         public float m_BannerCountTime { get; set; }
         private const float m_BannerResetTime = 10f;
         private bool m_IsBannerShowing;
@@ -464,7 +447,7 @@ namespace SDK
         private void UpdateBanner()
         {
             return;
-            if (!m_BannerAdsConfig.isActive) return;
+            if (!BannerAdsConfig.isActive) return;
             m_BannerCountTime += Time.deltaTime;
             if (m_BannerCountTime >= m_BannerResetTime)
             {
@@ -478,9 +461,9 @@ namespace SDK
         {
             if (adsMediationType != m_SDKSetup.bannerAdsMediationType) return;
             Debug.Log("Setup Banner");
-            m_BannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.BANNER);
+            BannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.BANNER);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.BANNER)) return;
-            foreach (AdsMediationController t in m_BannerAdsConfig.adsMediations)
+            foreach (AdsMediationController t in BannerAdsConfig.adsMediations)
             {
                 t.InitBannerAds(OnBannerLoadedSucess, OnBannerLoadedFail, OnBannerCollapsed, OnBannerExpanded);
             }
@@ -496,7 +479,7 @@ namespace SDK
         // ReSharper disable Unity.PerformanceAnalysis
         public void RequestBanner()
         {
-            if (!m_BannerAdsConfig.isActive) return;
+            if (!BannerAdsConfig.isActive) return;
             GetSelectedMediation(AdsType.BANNER).RequestBannerAds();
         }
 
@@ -548,14 +531,15 @@ namespace SDK
         
         #region Collapsible Banner
 
+        private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
         private bool m_IsCollapsibleBannerShowing;
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
         {
-            if (adsMediationType != m_SDKSetup.bannerAdsMediationType) return;
+            if (adsMediationType != m_SDKSetup.collapsibleBannerAdsMediationType) return;
             Debug.Log("Setup Banner");
-            m_CollapsibleBannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER);
+            CollapsibleBannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER)) return;
-            foreach (AdsMediationController t in m_CollapsibleBannerAdsConfig.adsMediations)
+            foreach (AdsMediationController t in CollapsibleBannerAdsConfig.adsMediations)
             {
                 t.InitCollapsibleBannerAds(OnCollapsibleBannerLoadedSucess, OnCollapsibleBannerLoadedFail, OnCollapsibleBannerCollapsed, OnCollapsibleBannerExpanded);
             }
@@ -571,7 +555,7 @@ namespace SDK
         // ReSharper disable Unity.PerformanceAnalysis
         public void RequestCollapsibleBanner()
         {
-            if (!m_CollapsibleBannerAdsConfig.isActive) return;
+            if (!CollapsibleBannerAdsConfig.isActive) return;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RequestBannerAds();
         }
 
@@ -622,6 +606,8 @@ namespace SDK
 
         #region Reward Ads
 
+        private AdsConfig RewardVideoAdsConfig => GetAdsConfig(AdsType.REWARDED);
+        
         private UnityAction m_RewardedVideoCloseCallback;
         private UnityAction m_RewardedVideoLoadSuccessCallback;
         private UnityAction m_RewardedVideoLoadFailedCallback;
@@ -636,9 +622,9 @@ namespace SDK
         {
             if(adsMediationType != m_SDKSetup.rewardedAdsMediationType) return;
             Debug.Log("Setup Reward Video");
-            m_RewardVideoAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.REWARDED);
+            RewardVideoAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.REWARDED);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.REWARDED)) return;
-            foreach (AdsMediationController t in m_RewardVideoAdsConfig.adsMediations)
+            foreach (AdsMediationController t in RewardVideoAdsConfig.adsMediations)
             {
                 t.InitRewardVideoAd(
                     OnRewardVideoClosed,
@@ -739,7 +725,7 @@ namespace SDK
 
         private void OnRewardVideoLoadSuccess()
         {
-            m_RewardVideoAdsConfig.RefreshLoadAds();
+            RewardVideoAdsConfig.RefreshLoadAds();
             if (m_RewardedVideoLoadSuccessCallback != null)
             {
                 m_RewardedVideoLoadSuccessCallback();
@@ -751,7 +737,7 @@ namespace SDK
         private void OnRewardVideoLoadFail()
         {
             ResetAdsLoadingCooldown();
-            m_RewardVideoAdsConfig.MarkReloadFail();
+            RewardVideoAdsConfig.MarkReloadFail();
             if (m_RewardedVideoLoadFailedCallback != null)
             {
                 m_RewardedVideoLoadFailedCallback();
@@ -777,6 +763,7 @@ namespace SDK
 
         #region MRec Ads
 
+        private AdsConfig MRecAdsConfig => GetAdsConfig(AdsType.MREC);
         private UnityAction m_MRecAdLoadedCallback;
         private UnityAction m_MRecAdLoadFailCallback;
         private UnityAction m_MRecAdClickedCallback;
@@ -788,9 +775,9 @@ namespace SDK
         {
             if (adsMediationType != m_SDKSetup.mrecAdsMediationType) return;
             Debug.Log("Setup MREC");
-            m_MRecAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.MREC);
+            MRecAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.MREC);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.MREC)) return;
-            foreach (AdsMediationController t in m_MRecAdsConfig.adsMediations)
+            foreach (AdsMediationController t in MRecAdsConfig.adsMediations)
             {
                 t.InitRMecAds(OnMRecAdLoadedEvent, OnMRecAdLoadFailedEvent, OnMRecAdClickedEvent, OnMRecAdExpandedEvent,
                     OnMRecAdCollapsedEvent);
@@ -854,6 +841,7 @@ namespace SDK
 
         #region App Open Ads
 
+        private AdsConfig AppOpenAdsConfig => GetAdsConfig(AdsType.APP_OPEN);
         private bool m_IsActiveAoaByRemoteConfig = true;
         private bool m_IsActiveShowAdsFirstTime = true;
         private bool m_IsDoneShowAdsFirstTime = false;
@@ -868,9 +856,9 @@ namespace SDK
         {
             if (adsMediationType != m_SDKSetup.appOpenAdsMediationType) return;
             Debug.Log("Setup App Open Ads");
-            m_AppOpenAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.APP_OPEN);
+            AppOpenAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.APP_OPEN);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.APP_OPEN)) return;
-            foreach (AdsMediationController t in m_AppOpenAdsConfig.adsMediations)
+            foreach (AdsMediationController t in AppOpenAdsConfig.adsMediations)
             {
                 t.InitAppOpenAds(OnAppOpenAdLoadedEvent, OnAppOpenAdLoadFailedEvent, OnAppOpenAdClosedEvent,
                     OnAppOpenAdDisplayedEvent, OnAppOpenAdFailedToDisplayEvent);
@@ -905,7 +893,7 @@ namespace SDK
         {
             if (GetSelectedMediation(AdsType.APP_OPEN) == null) return false;
             Debug.Log("Status " + GetSelectedMediation(AdsType.APP_OPEN)?.IsAppOpenAdsLoaded() + " Remote= " +
-                      m_IsActiveAoaByRemoteConfig + " AdsConfig=" + m_AppOpenAdsConfig.isActive + " Time=" +
+                      m_IsActiveAoaByRemoteConfig + " AdsConfig=" + AppOpenAdsConfig.isActive + " Time=" +
                       (DateTime.Now - m_StartPauseTime).TotalSeconds + " Need=" + m_AoaPauseTimeNeedToShowAds
                       + " IsShowingAds=" + IsShowingAds + " Close Time=" +
                       (DateTime.Now - m_CloseAdsTime).TotalSeconds + " Need=" + m_AoaTimeBetweenShow);
@@ -1046,12 +1034,12 @@ namespace SDK
         {
             return adsType switch
             {
-                AdsType.BANNER => m_BannerAdsConfig.GetAdsMediation(),
-                AdsType.COLLAPSIBLE_BANNER => m_CollapsibleBannerAdsConfig.GetAdsMediation(),
-                AdsType.INTERSTITIAL => m_InterstitialAdsConfig.GetAdsMediation(),
-                AdsType.REWARDED => m_RewardVideoAdsConfig.GetAdsMediation(),
-                AdsType.MREC => m_MRecAdsConfig.GetAdsMediation(),
-                AdsType.APP_OPEN => m_AppOpenAdsConfig.GetAdsMediation(),
+                AdsType.BANNER => BannerAdsConfig.GetAdsMediation(),
+                AdsType.COLLAPSIBLE_BANNER => CollapsibleBannerAdsConfig.GetAdsMediation(),
+                AdsType.INTERSTITIAL => InterstitialAdsConfig.GetAdsMediation(),
+                AdsType.REWARDED => RewardVideoAdsConfig.GetAdsMediation(),
+                AdsType.MREC => MRecAdsConfig.GetAdsMediation(),
+                AdsType.APP_OPEN => AppOpenAdsConfig.GetAdsMediation(),
                 _ => null
             };
         }
@@ -1070,9 +1058,9 @@ namespace SDK
         private void OnApplicationPause(bool paused)
         {
             Debug.Log("OnApplicationPause " + paused + " Remote=" + m_IsActiveAoaByRemoteConfig + " AdsConfig=" +
-                      m_AppOpenAdsConfig.isActive + " Time=" + (DateTime.Now - m_StartPauseTime).TotalSeconds +
+                      AppOpenAdsConfig.isActive + " Time=" + (DateTime.Now - m_StartPauseTime).TotalSeconds +
                       " Need=" + m_AoaPauseTimeNeedToShowAds);
-            if (!m_IsActiveAoaByRemoteConfig || !m_AppOpenAdsConfig.isActive) return;
+            if (!m_IsActiveAoaByRemoteConfig || !AppOpenAdsConfig.isActive) return;
             switch (paused)
             {
                 case true:

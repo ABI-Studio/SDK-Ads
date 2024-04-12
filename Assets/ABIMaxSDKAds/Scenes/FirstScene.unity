@@ -3766,6 +3766,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
+      propertyPath: m_AdsConfigs.Array.data[0].adsMediationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AdsConfigs.Array.data[1].adsMediationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AdsConfigs.Array.data[2].adsMediationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AdsConfigs.Array.data[3].adsMediationType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AdsConfigs.Array.data[4].adsMediationType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AdsConfigs.Array.data[5].adsMediationType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
       propertyPath: m_CollapsibleBannerAdsConfig.adsMediationType
       value: 2
       objectReference: {fileID: 0}

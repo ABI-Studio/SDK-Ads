@@ -50,38 +50,33 @@ MonoBehaviour:
   IsCheatAds: 0
   m_SDKSetup: {fileID: 11400000, guid: 249da539afb5e6d4ebc977a0cfeea499, type: 2}
   m_MainAdsMediationType: 2
-  m_RewardVideoAdsConfig:
-    adsType: 2
+  m_AdsConfigs:
+  - adsType: 2
     adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
-  m_InterstitialAdsConfig:
-    adsType: 1
+  - adsType: 1
     adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
-  m_BannerAdsConfig:
-    adsType: 0
+  - adsType: 0
     adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
-  m_CollapsibleBannerAdsConfig:
-    adsType: 0
+  - adsType: 5
     adsMediationType: 2
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
-  m_MRecAdsConfig:
-    adsType: 0
+  - adsType: 3
     adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
     adsMediations: []
-  m_AppOpenAdsConfig:
-    adsType: 0
+  - adsType: 4
     adsMediationType: 0
     isActive: 1
     maxReloadTime: 3
@@ -215,10 +210,10 @@ MonoBehaviour:
       AndroidID: []
     appOpenAdUnitID:
       AndroidID: []
-  m_BannerPosition: 0
+  m_BannerPosition: 1
   IsBannerShowingOnStart: 1
   m_CollapsibleBannerPosition: 1
-  IsCollapsibleBannerShowingOnStart: 1
+  IsCollapsibleBannerShowingOnStart: 0
 --- !u!1 &8353138578966223628
 GameObject:
   m_ObjectHideFlags: 0
