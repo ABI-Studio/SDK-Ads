@@ -444,17 +444,18 @@ namespace SDK
         #region Banner Ads
 
         private AdsConfig BannerAdsConfig => GetAdsConfig(AdsType.BANNER);
-        public float m_BannerCountTime { get; set; }
-        private const float m_BannerResetTime = 10f;
+        public float BannerCountTime { get; private set; }
+        private const float banner_reset_time = 15f;
         private bool m_IsBannerShowing;
 
         private void UpdateBanner()
         {
             if (!BannerAdsConfig.isActive) return;
-            m_BannerCountTime += Time.deltaTime;
-            if (m_BannerCountTime >= m_BannerResetTime)
+            if(!m_IsBannerShowing)return;
+            BannerCountTime += Time.deltaTime;
+            if (BannerCountTime >= banner_reset_time)
             {
-                m_BannerCountTime = 0;
+                BannerCountTime = 0;
                 DestroyBanner();
                 RequestBanner();
             }
@@ -490,11 +491,14 @@ namespace SDK
         {
             Debug.Log(("Call Show Banner Ads"));
             GetSelectedMediation(AdsType.BANNER).ShowBannerAds();
+            m_IsBannerShowing = true;
+            BannerCountTime = 0;
         }
 
         public void HideBannerAds()
         {
             GetSelectedMediation(AdsType.BANNER).HideBannerAds();
+            m_IsBannerShowing = false;
         }
 
         public void DestroyBanner()
@@ -510,24 +514,23 @@ namespace SDK
         private void OnBannerLoadedSucess()
         {
             Debug.Log("Banner Loaded");
-            m_BannerCountTime = 0;
+            BannerCountTime = 0;
         }
 
         private void OnBannerLoadedFail()
         {
             Debug.Log("Banner Load Fail");
+            BannerCountTime = 0;
         }
 
         private void OnBannerExpanded()
         {
             Debug.Log("Banner Expanded");
-            m_IsBannerShowing = true;
         }
 
         private void OnBannerCollapsed()
         {
             Debug.Log("Banner Collapsed");
-            m_IsBannerShowing = false;
         }
 
         #endregion
@@ -537,7 +540,7 @@ namespace SDK
         private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
         private bool m_IsCollapsibleBannerExpanded;
         private float m_CollapsibleBannerShowingTime;
-        private bool IsAutoCloseCollapsibleBanner;
+        private bool m_IsAutoCloseCollapsibleBanner;
         private UnityAction m_CollapsibleBannerCloseCallback;
         private const float collapsibleBannerMaxShowTime = 20;
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
@@ -564,7 +567,7 @@ namespace SDK
             if (m_CollapsibleBannerShowingTime >0)
             {
                 m_CollapsibleBannerShowingTime -= dt; 
-                if(m_CollapsibleBannerShowingTime <= 0 && IsAutoCloseCollapsibleBanner)
+                if(m_CollapsibleBannerShowingTime <= 0 && m_IsAutoCloseCollapsibleBanner)
                 {
                     HideCollapsibleBannerAds();
                     m_CollapsibleBannerCloseCallback?.Invoke();
@@ -581,7 +584,7 @@ namespace SDK
         public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
-            IsAutoCloseCollapsibleBanner = isAutoClose;
+            m_IsAutoCloseCollapsibleBanner = isAutoClose;
             m_CollapsibleBannerCloseCallback = closeCallback;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).ShowCollapsibleBannerAds();
         }
@@ -604,7 +607,7 @@ namespace SDK
         private void OnCollapsibleBannerLoadedSucess()
         {
             Debug.Log("Collapsible Banner Loaded");
-            m_BannerCountTime = 0;
+            BannerCountTime = 0;
         }
 
         private void OnCollapsibleBannerLoadedFail()

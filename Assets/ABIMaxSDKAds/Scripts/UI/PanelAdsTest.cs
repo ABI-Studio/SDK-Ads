@@ -105,7 +105,7 @@ public class PanelAdsTest : MonoBehaviour
         }
         m_TextInterstitialStatus.text = AdsManager.Instance.IsInterstitialAdLoaded() ? "Interstitial Ad Loaded" : "Interstitial Ad Not Loaded";
         m_TextRewardedStatus.text = AdsManager.Instance.IsRewardVideoLoaded() ? "Rewarded Ad Loaded" : "Rewarded Ad Not Loaded";
-        m_TextBannerCountTime.text = AdsManager.Instance.m_BannerCountTime.ToString(CultureInfo.InvariantCulture);
+        m_TextBannerCountTime.text = AdsManager.Instance.BannerCountTime.ToString(CultureInfo.InvariantCulture);
     }
 
     public void ShowBanner()
