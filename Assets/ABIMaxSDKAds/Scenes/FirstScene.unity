@@ -3682,7 +3682,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.bannerAdUnitID.AndroidID.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3777,7 +3777,7 @@ PrefabInstance:
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdsConfigs.Array.data[2].adsMediationType
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3801,6 +3801,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
+      propertyPath: m_BannerPosition
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
       propertyPath: m_MaxAdConfig.sdkKey.AndroidID
       value: ZoNyqu_piUmpl33-qkoIfRp6MTZGW9M5xk1mb1ZIWK6FN9EBu0TXSHeprC3LMPQI7S3kTc1-x7DJGSV8S-gvFJ
       objectReference: {fileID: 0}
@@ -3812,7 +3817,7 @@ PrefabInstance:
     - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_MaxAdConfig.bannerAdUnitID.AndroidID
-      value: 
+      value: 201f5e401931681c
       objectReference: {fileID: 0}
     - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}

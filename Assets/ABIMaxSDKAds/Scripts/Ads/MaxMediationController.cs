@@ -204,11 +204,12 @@ namespace SDK {
 
         #region Banner
 
+        public MaxSdkBase.BannerPosition m_BannerPosition;
         private bool m_IsBannerLoaded;
         public override void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback) {
             base.InitBannerAds(bannerLoadedSuccessCallback, bannerAdLoadedFailCallback, bannerAdsCollapsedCallback, bannerAdsExpandedCallback);
             Debug.Log("Banner MAX Init ID = " + m_MaxAdConfig.BannerAdUnitID);
-            MaxSdk.CreateBanner(m_MaxAdConfig.BannerAdUnitID, MaxSdkBase.BannerPosition.BottomCenter);
+            MaxSdk.CreateBanner(m_MaxAdConfig.BannerAdUnitID, m_BannerPosition);
             MaxSdk.SetBannerBackgroundColor(m_MaxAdConfig.BannerAdUnitID, Color.black);
             
             MaxSdkCallbacks.Banner.OnAdLoadedEvent += BannerAdLoadedEvent;
