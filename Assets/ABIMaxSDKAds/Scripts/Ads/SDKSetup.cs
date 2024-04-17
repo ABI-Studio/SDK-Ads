@@ -200,10 +200,15 @@ public partial class SDKSetup
 public partial class SDKSetup
 {
     [BoxGroup("BANNER")] public AdsMediationType bannerAdsMediationType;
+    #if UNITY_AD_MAX
+    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.MAX")] public MaxSdkBase.BannerPosition maxBannerAdsPosition;
+    #endif
     
-    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition bannerAdsPosition;
+    #if UNITY_AD_ADMOB
+    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.ADMOB")] public AdPosition admobBannerAdsPosition;
+    #endif
     
-    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isBannerShowingOnStart = false;
+    [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType != AdsMediationType.NONE")] public bool isBannerShowingOnStart = false;
 
     [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.MAX")]
     public string bannerAdUnitID_MAX

@@ -134,6 +134,7 @@ namespace SDK
             }
 
             UpdateBanner();
+            UpdateCollapsibleBanner(dt);
         }
 
         private void InitConfig()
@@ -255,6 +256,9 @@ namespace SDK
             maxMediationController.m_MaxAdConfig.RewardedAdUnitID = m_SDKSetup.rewardedAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.RewardedAdUnitID : "";
             
             maxMediationController.m_MaxAdConfig.BannerAdUnitID = m_SDKSetup.bannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.BannerAdUnitID : "";
+            #if UNITY_AD_MAX
+            maxMediationController.m_BannerPosition = m_SDKSetup.maxBannerAdsPosition;
+            #endif
             
             maxMediationController.m_MaxAdConfig.CollapsibleBannerAdUnitID = m_SDKSetup.collapsibleBannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.CollapsibleBannerAdUnitID : "";
             
@@ -293,7 +297,7 @@ namespace SDK
                         ? m_SDKSetup.admobAdsSetup.BannerAdUnitIDList
                         : new List<string>();
                 admobMediationController.IsBannerShowingOnStart = m_SDKSetup.isBannerShowingOnStart;
-                admobMediationController.m_BannerPosition = m_SDKSetup.bannerAdsPosition;
+                admobMediationController.m_BannerPosition = m_SDKSetup.admobBannerAdsPosition;
             }
 
             {
@@ -532,7 +536,11 @@ namespace SDK
         #region Collapsible Banner
 
         private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
-        private bool m_IsCollapsibleBannerShowing;
+        private bool m_IsCollapsibleBannerExpanded;
+        private float m_CollapsibleBannerShowingTime;
+        private bool IsAutoCloseCollapsibleBanner;
+        private UnityAction m_CollapsibleBannerCloseCallback;
+        private const float collapsibleBannerMaxShowTime = 20;
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
         {
             if (adsMediationType != m_SDKSetup.collapsibleBannerAdsMediationType) return;
@@ -549,9 +557,21 @@ namespace SDK
 
         public bool IsCollapsibleBannerShowing()
         {
-            return m_IsCollapsibleBannerShowing;
+            return m_IsCollapsibleBannerExpanded;
         }
 
+        private void UpdateCollapsibleBanner(float dt)
+        {
+            if (m_CollapsibleBannerShowingTime >0)
+            {
+                m_CollapsibleBannerShowingTime -= dt; 
+                if(m_CollapsibleBannerShowingTime <= 0 && IsAutoCloseCollapsibleBanner)
+                {
+                    HideCollapsibleBannerAds();
+                    m_CollapsibleBannerCloseCallback?.Invoke();
+                }
+            }
+        }
         // ReSharper disable Unity.PerformanceAnalysis
         public void RequestCollapsibleBanner()
         {
@@ -559,9 +579,11 @@ namespace SDK
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RequestBannerAds();
         }
 
-        public void ShowCollapsibleBannerAds()
+        public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
+            IsAutoCloseCollapsibleBanner = isAutoClose;
+            m_CollapsibleBannerCloseCallback = closeCallback;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).ShowCollapsibleBannerAds();
         }
 
@@ -594,13 +616,18 @@ namespace SDK
         private void OnCollapsibleBannerExpanded()
         {
             Debug.Log("Collapsible Banner Expanded");
-            m_IsCollapsibleBannerShowing = true;
+            m_IsCollapsibleBannerExpanded = true;
         }
-
+        
         private void OnCollapsibleBannerCollapsed()
         {
             Debug.Log("Collapsible Banner Collapsed");
-            m_IsCollapsibleBannerShowing = false;
+            m_IsCollapsibleBannerExpanded = false;
+            m_CollapsibleBannerShowingTime = collapsibleBannerMaxShowTime;
+        }
+        public bool IsCollapsibleBannerShowingTimeOut()
+        {
+            return m_CollapsibleBannerShowingTime <= 0;
         }
         #endregion
 

@@ -120,7 +120,7 @@ public class PanelAdsTest : MonoBehaviour
     public void ShowCollapsibleBanner()
     {
         AdsManager.Instance.HideBannerAds();
-        AdsManager.Instance.ShowCollapsibleBannerAds();
+        AdsManager.Instance.ShowCollapsibleBannerAds(false, null);
     }
     public void HideCollapsibleBanner()
     {

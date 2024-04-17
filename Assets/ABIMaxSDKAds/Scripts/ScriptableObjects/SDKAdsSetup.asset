@@ -51,8 +51,9 @@ MonoBehaviour:
   adsMediationType: 2
   interstitialAdsMediationType: 2
   rewardedAdsMediationType: 2
-  bannerAdsMediationType: 2
-  bannerAdsPosition: 1
+  bannerAdsMediationType: 1
+  maxBannerAdsPosition: 7
+  admobBannerAdsPosition: 1
   isBannerShowingOnStart: 1
   collapsibleBannerAdsMediationType: 2
   collapsibleBannerAdsPosition: 1
