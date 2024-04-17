@@ -450,7 +450,6 @@ namespace SDK
 
         private void UpdateBanner()
         {
-            return;
             if (!BannerAdsConfig.isActive) return;
             m_BannerCountTime += Time.deltaTime;
             if (m_BannerCountTime >= m_BannerResetTime)
