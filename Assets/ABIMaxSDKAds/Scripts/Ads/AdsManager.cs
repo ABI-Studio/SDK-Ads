@@ -29,6 +29,9 @@ namespace SDK
     public enum WatchVideoRewardType
     {
         NONE,
+        X2CLAIM,
+        UNLOCKITEM,
+        TEST_ADS
     }
 
     [ScriptOrder(-99)]
@@ -408,15 +411,16 @@ namespace SDK
 
         private void OnInterstitialAdFailedToLoad()
         {
+            MarkShowingAds(false);
             ResetAdsLoadingCooldown();
             m_InterstitialAdLoadFailCallback?.Invoke();
         }
 
         private void OnInterstitialAdShowSuccess()
         {
+            MarkShowingAds(true);
             m_InterstitialAdShowSuccessCallback?.Invoke();
             ABIAnalyticsManager.Instance.TrackAdsInterstitial_ShowSuccess();
-            MarkShowingAds(true);
         }
 
         private void OnInterstitialAdShowFail()
@@ -540,9 +544,11 @@ namespace SDK
         private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
         private bool m_IsCollapsibleBannerExpanded;
         private float m_CollapsibleBannerShowingTime;
+        private float m_CollapsibleBannerRefreshTime;
         private bool m_IsAutoCloseCollapsibleBanner;
         private UnityAction m_CollapsibleBannerCloseCallback;
-        private const float collapsibleBannerMaxShowTime = 20;
+        private const float collapsible_banner_max_show_time = 20;
+        private const float collapsible_banner_max_refresh_time = 30;
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
         {
             if (adsMediationType != m_SDKSetup.collapsibleBannerAdsMediationType) return;
@@ -573,19 +579,35 @@ namespace SDK
                     m_CollapsibleBannerCloseCallback?.Invoke();
                 }
             }
+
+            if (m_CollapsibleBannerRefreshTime > 0)
+            {
+                m_CollapsibleBannerRefreshTime -= dt;
+                if(m_CollapsibleBannerRefreshTime <= 0)
+                {
+                    RefreshCollapsibleBanner();
+                    m_CollapsibleBannerRefreshTime = 0;
+                }
+            }
         }
         // ReSharper disable Unity.PerformanceAnalysis
         public void RequestCollapsibleBanner()
         {
             if (!CollapsibleBannerAdsConfig.isActive) return;
-            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RequestBannerAds();
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RequestCollapsibleBannerAds(false);
         }
 
+        public void RefreshCollapsibleBanner()
+        {
+            if (!CollapsibleBannerAdsConfig.isActive) return;
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RefreshCollapsibleBannerAds();
+        }
         public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
             m_IsAutoCloseCollapsibleBanner = isAutoClose;
             m_CollapsibleBannerCloseCallback = closeCallback;
+            m_CollapsibleBannerRefreshTime = 0;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).ShowCollapsibleBannerAds();
         }
 
@@ -607,7 +629,7 @@ namespace SDK
         private void OnCollapsibleBannerLoadedSucess()
         {
             Debug.Log("Collapsible Banner Loaded");
-            BannerCountTime = 0;
+            m_CollapsibleBannerRefreshTime = collapsible_banner_max_refresh_time;
         }
 
         private void OnCollapsibleBannerLoadedFail()
@@ -619,13 +641,15 @@ namespace SDK
         {
             Debug.Log("Collapsible Banner Expanded");
             m_IsCollapsibleBannerExpanded = true;
+            m_CollapsibleBannerRefreshTime = 0;
         }
         
         private void OnCollapsibleBannerCollapsed()
         {
             Debug.Log("Collapsible Banner Collapsed");
             m_IsCollapsibleBannerExpanded = false;
-            m_CollapsibleBannerShowingTime = collapsibleBannerMaxShowTime;
+            m_CollapsibleBannerShowingTime = collapsible_banner_max_show_time;
+            m_CollapsibleBannerRefreshTime = collapsible_banner_max_refresh_time;
         }
         public bool IsCollapsibleBannerShowingTimeOut()
         {
@@ -686,6 +710,7 @@ namespace SDK
             m_RewardedVideoShowFailCallback = failedCallback;
             if (m_IsActiveInterruptReward && IsReadyToShowRewardInterrupt() && IsInterstitialAdLoaded())
             {
+                MarkShowingAds(true);
                 ShowInterstitial(null, () =>
                 {
                     successCallback();
@@ -697,6 +722,7 @@ namespace SDK
                 ABIAnalyticsManager.Instance.TrackAdsReward_ClickOnButton();
                 if (IsReadyToShowRewardVideo())
                 {
+                    MarkShowingAds(true);
                     GetSelectedMediation(AdsType.REWARDED)
                         .ShowRewardVideoAd(OnRewardVideoEarnSuccess, OnRewardVideoShowFail);
                 }
@@ -875,11 +901,20 @@ namespace SDK
         private bool m_IsActiveShowAdsFirstTime = true;
         private bool m_IsDoneShowAdsFirstTime = false;
         private double m_AoaTimeBetweenShow = 0;
-        private double m_AoaPauseTimeNeedToShowAds = 0;
-        private DateTime m_ExpireTime;
-        private DateTime m_CloseAdsTime;
-        private DateTime m_StartPauseTime;
-        private bool IsShowingAds { get; set; }
+        private double m_AoaPauseTimeNeedToShowAds = 5;
+        private DateTime m_CloseAdsTime = DateTime.Now;
+        private DateTime m_StartPauseTime = DateTime.Now;
+        private bool m_IsShowingAds;
+
+        private bool IsShowingAds
+        {
+            get => m_IsShowingAds;
+            set
+            {
+                m_IsShowingAds = value;
+                Debug.Log("Set Showing Ads = " + value);
+            } 
+        }
 
         private void SetupAppOpenAds(AdsMediationType adsMediationType)
         {
@@ -901,14 +936,27 @@ namespace SDK
         {
             if (IsAppOpenAdsReady())
             {
+                Debug.Log("Start Show App Open Ads");
+                MarkShowingAds(true);
                 GetSelectedMediation(AdsType.APP_OPEN).ShowAppOpenAds();
             }
         }
-
+        private void DelayShowAppOpenAds()
+        {
+            StartCoroutine(coDelayShowAppOpenAds());
+        }
+        IEnumerator coDelayShowAppOpenAds()
+        {
+            yield return new WaitForSeconds(0.3f);
+            ShowAppOpenAds();
+        }
+        
         private void ForceShowAppOpenAds()
         {
             if (IsAppOpenAdsLoaded())
             {
+                MarkShowingAds(true);
+                Debug.Log("Start Force Show App Open Ads");
                 GetSelectedMediation(AdsType.APP_OPEN).ShowAppOpenAds();
             }
         }
@@ -933,7 +981,9 @@ namespace SDK
         {
             if (!m_IsActiveAoaByRemoteConfig) return false;
             if (IsShowingAds) return false;
-            return !((DateTime.Now - m_CloseAdsTime).TotalSeconds < m_AoaTimeBetweenShow);
+            float totalTimeBetweenShow = (float) (DateTime.Now - m_CloseAdsTime).TotalSeconds;
+            Debug.Log("Total Time Between Show = " + totalTimeBetweenShow + " Need = " + m_AoaTimeBetweenShow);
+            return !(totalTimeBetweenShow < m_AoaTimeBetweenShow);
         }
 
         private bool IsAppOpenAdsLoaded()
@@ -1031,7 +1081,7 @@ namespace SDK
         private void OnAppOpenAdClosedEvent()
         {
             Debug.Log("AdsManager Closed app open ad");
-            IsShowingAds = false;
+            MarkShowingAds(false);
             m_CloseAdsTime = DateTime.Now;
             RequestAppOpenAds();
         }
@@ -1039,13 +1089,13 @@ namespace SDK
         private void OnAppOpenAdDisplayedEvent()
         {
             Debug.Log("AdsManager Displayed app open ad");
-            IsShowingAds = true;
+            MarkShowingAds(true);
         }
 
         private void OnAppOpenAdFailedToDisplayEvent()
         {
             Debug.Log("AdsManager Failed to display app open ad");
-            IsShowingAds = false;
+            MarkShowingAds(false);
         }
 
         #endregion
@@ -1096,9 +1146,21 @@ namespace SDK
                     m_StartPauseTime = DateTime.Now;
                     break;
                 case false when (DateTime.Now - m_StartPauseTime).TotalSeconds > m_AoaPauseTimeNeedToShowAds:
-                    ShowAppOpenAds();
+                    DelayShowAppOpenAds();
                     break;
             }
         }
     }
+    [System.Serializable]
+    public class UUID
+    {
+        public string uuid;
+
+        public static string Generate()
+        {
+            UUID newUuid = new UUID {uuid = System.Guid.NewGuid().ToString()};
+            return newUuid.uuid;
+        }
+    }
+
 }

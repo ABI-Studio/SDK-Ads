@@ -67,6 +67,8 @@ namespace SDK {
         }
         public virtual void RequestCollapsibleBannerAds(bool isOpenOnStart) {
         }
+        public virtual void RefreshCollapsibleBannerAds() {
+        }
         public virtual void ShowCollapsibleBannerAds() {
         }
         public virtual void HideCollapsibleBannerAds() {

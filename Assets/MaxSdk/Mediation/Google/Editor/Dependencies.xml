@@ -5,6 +5,6 @@
         <androidPackage spec="com.applovin.mediation:google-adapter:[23.0.0.1]" />
     </androidPackages>
     <iosPods>
-        <iosPod name="AppLovinMediationGoogleAdapter" version="11.2.0.1" />
+        <iosPod name="AppLovinMediationGoogleAdapter" version="11.3.0.0" />
     </iosPods>
 </dependencies>
