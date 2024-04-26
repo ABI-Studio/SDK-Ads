@@ -361,7 +361,6 @@ namespace SDK
         {
             Debug.Log("Admob Collapsible Banner Closed");
             m_CollapsibleBannerAdsCollapsedCallback?.Invoke();
-            RequestCollapsibleBannerAds(false);
         }
         private void OnAdCollapsibleBannerPaid(AdValue adValue)
         {
