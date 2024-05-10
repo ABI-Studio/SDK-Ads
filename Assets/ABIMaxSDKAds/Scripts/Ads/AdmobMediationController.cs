@@ -272,6 +272,7 @@ namespace SDK
             RegisterCollapsibleBannerEvents(bannerView);
             return bannerView;
         }
+        
         private void LoadCollapsibleBannerAds(BannerView bannerView)
         {
             Debug.Log("Call Load Collapsible Banner Ads");
@@ -282,7 +283,8 @@ namespace SDK
         public override void RefreshCollapsibleBannerAds()
         {
             Debug.Log("Call Refresh Collapsible Banner Ads");
-            m_CurrentCollapsibleBanner ??= CreateCollapsibleBannerView();
+            DestroyCollapsibleBannerAds();
+            m_CurrentCollapsibleBanner = CreateCollapsibleBannerView();
             AdRequest adRequest = new AdRequest();
             adRequest.Extras.Add("collapsible_request_id", UUID.Generate());
             
@@ -350,7 +352,11 @@ namespace SDK
             Debug.Log("Admob Collapsible Banner Fail: " + args.GetMessage());
             m_AdmobAdSetup.CollapsibleBannerAdUnitID.ChangeID();
             m_CollapsibleBannerAdLoadedFailCallback?.Invoke();
-            LoadCollapsibleBannerAds(CreateCollapsibleBannerView());
+        }
+        private void ReloadCollapsibleBannerAds()
+        {
+            m_CurrentCollapsibleBanner = CreateCollapsibleBannerView();
+            LoadCollapsibleBannerAds(m_CurrentCollapsibleBanner);
         }
         private void OnAdCollapsibleBannerOpened(BannerView bannerView)
         {
