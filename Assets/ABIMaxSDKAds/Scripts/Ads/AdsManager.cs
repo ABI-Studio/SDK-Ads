@@ -440,7 +440,7 @@ namespace SDK
 
         public bool IsReadyToShowInterstitial()
         {
-            return IsInterstitialAdLoaded() && m_InterstitialCappingAdsCooldown > 0;
+            return IsInterstitialAdLoaded() && m_InterstitialCappingAdsCooldown <= 0;
         }
 
         #endregion
