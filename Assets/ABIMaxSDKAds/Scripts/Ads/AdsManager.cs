@@ -551,6 +551,15 @@ namespace SDK
         private const float collapsible_banner_max_refresh_time = 30;
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
         {
+            StartCoroutine(coDelayInitCollapsibleBannerAds(adsMediationType));
+        }
+        IEnumerator coDelayInitCollapsibleBannerAds(AdsMediationType adsMediationType)
+        {
+            yield return new WaitForSeconds(5);
+            SetupCollapsibleBannerAdMediation(adsMediationType);
+        }
+        private void SetupCollapsibleBannerAdMediation(AdsMediationType adsMediationType)
+        {
             if (adsMediationType != m_SDKSetup.collapsibleBannerAdsMediationType) return;
             Debug.Log("Setup Banner");
             CollapsibleBannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER);
