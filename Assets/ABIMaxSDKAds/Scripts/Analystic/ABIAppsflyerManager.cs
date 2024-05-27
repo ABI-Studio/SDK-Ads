@@ -5,6 +5,7 @@ using AppsFlyerSDK;
 namespace SDK
 {
 #if UNITY_APPSFLYER
+    [ScriptOrder(-150)]
     public class ABIAppsflyerManager : MonoBehaviour, IAppsFlyerConversionData
     {
         private static ABIAppsflyerManager instance;
@@ -19,7 +20,7 @@ namespace SDK
             }
             DontDestroyOnLoad(gameObject);
             instance = this;
-            AppsFlyerAdRevenue.start(AppsFlyerAdRevenueType.Generic);
+            AppsFlyerAdRevenue.start();
         }
 
         public static void SendEvent(string eventName, Dictionary<string, string> pairs)

@@ -7,57 +7,33 @@
 
 #import "AppsFlyerAdRevenueWrapper.h"
 
-static bool AdRevenueTypeMoPub = NO;
-static BOOL AdRevenueTypeUnityAds = NO;
-static BOOL AdRevenueTypeFacebookAudience = NO;
-static BOOL AdRevenueTypeGoogleAdMob = NO;
-static BOOL AdRevenueTypeAppLovin = NO;
 
 @implementation AppsFlyerAdRevenueWrapper
 
-+ (BOOL) isMoPubSet { return AdRevenueTypeMoPub; }
-+ (BOOL) isUnityAdsSet { return AdRevenueTypeUnityAds; }
-+ (BOOL) isFacebookAudienceSet { return AdRevenueTypeFacebookAudience; }
-+ (BOOL) isGoogleAdMobSet { return AdRevenueTypeGoogleAdMob; }
-+ (BOOL) isAppLovinSet { return AdRevenueTypeAppLovin; }
 
 extern "C" {
-    
-    void setAppsFlyerAdRevenueType(int type){
-        switch (type){
-            case 1:
-                AdRevenueTypeMoPub = YES;
-                break;
-            case 2:
-                AdRevenueTypeUnityAds = YES;
-                break;
-            case 3:
-                AdRevenueTypeFacebookAudience = YES;
-                break;
-            case 4:
-                AdRevenueTypeGoogleAdMob = YES;
-                break;
-            case 5:
-                AdRevenueTypeAppLovin = YES;
-                break;
-            default:
-                break;
+
+    NSString* stringFromChar(const char *str) {
+        return str ? [NSString stringWithUTF8String:str] : nil;
+    }
+
+    NSDictionary* dictionaryFromJson(const char *jsonString) {
+        if(jsonString){
+            NSData *jsonData = [[NSData alloc] initWithBytes:jsonString length:strlen(jsonString)];
+            NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:kNilOptions error:nil];
+            return dictionary;
         }
+        return nil;
     }
     
+    
     const void _start(int length, int* adRevenueTypes){
-        if(length > 0 && adRevenueTypes) {
-            for(int i = 0; i < length; i++) {
-                setAppsFlyerAdRevenueType(adRevenueTypes[i]);
-            }
-        }
-        
         [AppsFlyerAdRevenue start];
     }
     const void _setIsDebugAdrevenue(bool isDebug){
         [[AppsFlyerAdRevenue shared] setIsDebug:isDebug];
     }
-
+    
     const void _logAdRevenue(const char* monetizationNetwork,
                              int mediationNetwork,
                              double eventRevenue,
@@ -68,7 +44,8 @@ extern "C" {
                                                             eventRevenue:[NSNumber numberWithDouble:eventRevenue]
                                                          revenueCurrency:stringFromChar(revenueCurrency)
                                                     additionalParameters:dictionaryFromJson(additionalParameters)];
-    }   
+        
+    }
 }
 
 @end

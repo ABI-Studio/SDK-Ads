@@ -7,15 +7,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFUnityUtils.mm"
 #if __has_include(<AppsFlyerAdRevenue/AppsFlyerAdRevenue.h>)
 #import <AppsFlyerAdRevenue/AppsFlyerAdRevenue.h>
 #endif
 
 @interface AppsFlyerAdRevenueWrapper : NSObject
-+ (BOOL)isMoPubSet;
-+ (BOOL)isUnityAdsSet;
-+ (BOOL)isFacebookAudienceSet;
-+ (BOOL)isGoogleAdMobSet;
-+ (BOOL)isAppLovinSet;
+
 @end

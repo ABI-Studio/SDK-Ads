@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
@@ -8,17 +8,17 @@ namespace AppsFlyerSDK
     public class AppsFlyerAdRevenue : MonoBehaviour
     {
 
-        public static readonly string kAppsFlyerAdRevenueVersion = "6.4.3";
+        public static readonly string kAppsFlyerAdRevenueVersion = "6.14.3";
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        private static AndroidJavaClass appsFlyerAndroid = new AndroidJavaClass("com.appsflyer.unity.afunityadrevenueplugin.AdRevenueUnityWrapper");
+        private static AndroidJavaClass appsFlyerAndroid = new AndroidJavaClass("com.appsflyer.unity.afunityadrevenuegenericplugin.AdRevenueUnityWrapper");
 #endif
 
-        public static void start(params AppsFlyerAdRevenueType[] adRevenueTypes)
+        public static void start()
         {
 #if UNITY_IOS && !UNITY_EDITOR
 
-        _start(adRevenueTypes.Length, adRevenueTypes);
+        _start();
 
 #elif UNITY_ANDROID && !UNITY_EDITOR
 
@@ -28,7 +28,7 @@ namespace AppsFlyerSDK
 
                     AndroidJavaObject cls_Application = cls_Activity.Call<AndroidJavaObject>("getApplication");
 
-                                appsFlyerAndroid.CallStatic("start", cls_Application, adRevenueTypes.Length, convertEnumArrToInArr(adRevenueTypes));
+                                appsFlyerAndroid.CallStatic("start", cls_Application);
                 }
             } 
 
@@ -83,7 +83,7 @@ namespace AppsFlyerSDK
 #if UNITY_IOS && !UNITY_EDITOR
         
     [DllImport("__Internal")]
-    private static extern void _start(int length, params AppsFlyerAdRevenueType[] adRevenueTypes);
+    private static extern void _start();
 
     [DllImport("__Internal")]
     private static extern void _setIsDebugAdrevenue(bool isDebug);
@@ -110,20 +110,26 @@ namespace AppsFlyerSDK
                     return 1;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeGoogleAdMob:
                     return 2;
-                case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeMoPub:
-                    return 3;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeFyber:
-                    return 4;
+                    return 3;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeAppodeal:
-                    return 5;
+                    return 4;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeAdmost:
-                    return 6;
+                    return 5;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeTopon:
-                    return 7;
+                    return 6;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeTradplus:
-                    return 8;
+                    return 7;
                 case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeYandex:
+                    return 8;
+                case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeChartBoost:
                     return 9;
+                case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeUnity:
+                    return 10;
+                case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeCustomMediation:
+                    return 11;
+                case AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypedirectMonetization:
+                    return 12;
                 default:
                     return -1;
             }
@@ -147,36 +153,24 @@ namespace AppsFlyerSDK
 
             return map;
         }
-
-        private static int[] convertEnumArrToInArr(AppsFlyerAdRevenueType[] adRevenueType)
-        {
-            return Array.ConvertAll<AppsFlyerAdRevenueType, int>(
-                   adRevenueType, delegate (AppsFlyerAdRevenueType value) { return (int)value; });
-        }
-    }
-
-
-    public enum AppsFlyerAdRevenueType
-    {
-        Generic = 0,
-        MoPub = 1
-
     }
 
 
     public enum AppsFlyerAdRevenueMediationNetworkType
     {
         AppsFlyerAdRevenueMediationNetworkTypeGoogleAdMob = 1,
-        AppsFlyerAdRevenueMediationNetworkTypeMoPub = 2,
-        AppsFlyerAdRevenueMediationNetworkTypeIronSource = 3,
-        AppsFlyerAdRevenueMediationNetworkTypeApplovinMax = 4,
-        AppsFlyerAdRevenueMediationNetworkTypeFyber = 5,
-        AppsFlyerAdRevenueMediationNetworkTypeAppodeal = 6,
-        AppsFlyerAdRevenueMediationNetworkTypeAdmost = 7,
-        AppsFlyerAdRevenueMediationNetworkTypeTopon = 8,
-        AppsFlyerAdRevenueMediationNetworkTypeTradplus = 9,
-        AppsFlyerAdRevenueMediationNetworkTypeYandex = 10
-
+        AppsFlyerAdRevenueMediationNetworkTypeIronSource = 2,
+        AppsFlyerAdRevenueMediationNetworkTypeApplovinMax = 3,
+        AppsFlyerAdRevenueMediationNetworkTypeFyber = 4,
+        AppsFlyerAdRevenueMediationNetworkTypeAppodeal = 5,
+        AppsFlyerAdRevenueMediationNetworkTypeAdmost = 6,
+        AppsFlyerAdRevenueMediationNetworkTypeTopon = 7,
+        AppsFlyerAdRevenueMediationNetworkTypeTradplus = 8,
+        AppsFlyerAdRevenueMediationNetworkTypeYandex = 9,
+        AppsFlyerAdRevenueMediationNetworkTypeChartBoost = 10,
+        AppsFlyerAdRevenueMediationNetworkTypeUnity = 11,
+        AppsFlyerAdRevenueMediationNetworkTypeCustomMediation = 12,
+        AppsFlyerAdRevenueMediationNetworkTypedirectMonetization = 13
     }
 
 
