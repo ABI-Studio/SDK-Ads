@@ -34,10 +34,10 @@ namespace SDK {
         protected UnityAction m_BannerAdLoadedFailCallback;
         protected UnityAction m_BannerAdsCollapsedCallback;
         protected UnityAction m_BannerAdsExpandedCallback;
-        public virtual void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback) {
+        public virtual void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCallback, UnityAction bannerAdsExpandedCallback) {
             m_BannerAdLoadedSuccessCallback = bannerLoadedSuccessCallback;
             m_BannerAdLoadedFailCallback = bannerAdLoadedFailCallback;
-            m_BannerAdsCollapsedCallback = bannerAdsCollapsedCallback;
+            m_BannerAdsCollapsedCallback = bannerAdsCallback;
             m_BannerAdsExpandedCallback = bannerAdsExpandedCallback;
         }
         public virtual void RequestBannerAds() {

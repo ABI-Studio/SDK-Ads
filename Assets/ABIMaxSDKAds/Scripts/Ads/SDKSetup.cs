@@ -6,6 +6,7 @@ using SDK;
 using Sirenix.OdinInspector;
 
 using UnityEngine;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using GoogleMobileAds.Editor;
 using UnityEditor;
@@ -203,7 +204,6 @@ public partial class SDKSetup
     #if UNITY_AD_MAX
     [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.MAX")] public MaxSdkBase.BannerPosition maxBannerAdsPosition;
     #endif
-    
     #if UNITY_AD_ADMOB
     [BoxGroup("BANNER")][ShowInInspector, ShowIf("@bannerAdsMediationType == AdsMediationType.ADMOB")] public AdPosition admobBannerAdsPosition;
     #endif
@@ -230,6 +230,10 @@ public partial class SDKSetup
     [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition collapsibleBannerAdsPosition;
     
     [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerShowingOnStart = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerAutoRefresh = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isCollapsibleBannerAutoRefresh")] [Range(30f,60f)]public float autoRefreshTime = 30;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerAutoClose = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isCollapsibleBannerAutoClose")] [Range(30f,60f)]public float autoCloseTime = 30;
 
     [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType == AdsMediationType.MAX")]
     public string collapsibleBannerAdUnitID_MAX

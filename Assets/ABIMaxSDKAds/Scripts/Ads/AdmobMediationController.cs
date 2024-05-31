@@ -29,14 +29,6 @@ namespace SDK
             InitAdmob();
         }
 
-        private void Update()
-        {
-            // if (Input.GetKeyDown(KeyCode.A))
-            // {
-            //     ShowCollapsibleBannerAds();
-            // }
-        }
-
         #region Consent
 
         private void InitConsent()
@@ -118,9 +110,9 @@ namespace SDK
         public AdPosition m_BannerPosition;
         public bool IsBannerShowingOnStart = false;
         public override void InitBannerAds(UnityAction bannerLoadedCallback, UnityAction bannerAdLoadedFailCallback,
-            UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback)
+            UnityAction bannerAdsCallback, UnityAction bannerAdsExpandedCallback)
         {
-            base.InitBannerAds(bannerLoadedCallback, bannerAdLoadedFailCallback, bannerAdsCollapsedCallback, bannerAdsExpandedCallback);
+            base.InitBannerAds(bannerLoadedCallback, bannerAdLoadedFailCallback, bannerAdsCallback, bannerAdsExpandedCallback);
             Debug.Log("Init Admob Banner");
             RequestBannerAds();
             if (!IsBannerShowingOnStart)
@@ -262,7 +254,7 @@ namespace SDK
             Debug.Log("Init Admob Collapsible Banner");
             RequestCollapsibleBannerAds(IsCollapsibleBannerShowingOnStart);
         }
-
+        
         private BannerView CreateCollapsibleBannerView()
         {
             Debug.Log("Creating Collapsible Banner view");
@@ -953,4 +945,16 @@ namespace SDK
             return CurrentPlatformID.Count > 0;
         }
     }
+    #if !UNITY_AD_ADMOB
+    public enum AdPosition
+    {
+        Top,
+        Bottom,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
+        Center,
+    }
+    #endif
 }

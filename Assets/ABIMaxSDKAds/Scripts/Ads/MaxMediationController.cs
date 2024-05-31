@@ -206,8 +206,8 @@ namespace SDK {
 
         public MaxSdkBase.BannerPosition m_BannerPosition;
         private bool m_IsBannerLoaded;
-        public override void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback) {
-            base.InitBannerAds(bannerLoadedSuccessCallback, bannerAdLoadedFailCallback, bannerAdsCollapsedCallback, bannerAdsExpandedCallback);
+        public override void InitBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCallback, UnityAction bannerAdsExpandedCallback) {
+            base.InitBannerAds(bannerLoadedSuccessCallback, bannerAdLoadedFailCallback, bannerAdsCallback, bannerAdsExpandedCallback);
             Debug.Log("Banner MAX Init ID = " + m_MaxAdConfig.BannerAdUnitID);
             MaxSdk.CreateBanner(m_MaxAdConfig.BannerAdUnitID, m_BannerPosition);
             MaxSdk.SetBannerBackgroundColor(m_MaxAdConfig.BannerAdUnitID, Color.black);
@@ -382,5 +382,18 @@ namespace SDK {
             return AdsMediationType.MAX;
         }
     }
-
+    #if !UNITY_AD_MAX
+    public enum BannerPosition
+    {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        Centered,
+        CenterLeft,
+        CenterRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight
+    }
+    #endif
 }

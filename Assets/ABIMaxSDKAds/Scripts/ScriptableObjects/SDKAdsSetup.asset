@@ -51,12 +51,16 @@ MonoBehaviour:
   adsMediationType: 2
   interstitialAdsMediationType: 2
   rewardedAdsMediationType: 2
-  bannerAdsMediationType: 1
+  bannerAdsMediationType: 0
   maxBannerAdsPosition: 7
   admobBannerAdsPosition: 1
   isBannerShowingOnStart: 1
   collapsibleBannerAdsMediationType: 2
   collapsibleBannerAdsPosition: 1
   isCollapsibleBannerShowingOnStart: 0
+  isCollapsibleBannerAutoRefresh: 0
+  autoRefreshTime: 30
+  isCollapsibleBannerAutoClose: 0
+  autoCloseTime: 30
   mrecAdsMediationType: 0
   appOpenAdsMediationType: 0

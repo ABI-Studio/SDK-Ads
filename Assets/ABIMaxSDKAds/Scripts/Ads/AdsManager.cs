@@ -284,14 +284,12 @@ namespace SDK
             if (m_SDKSetup.interstitialAdsMediationType == adsMediationType)
             {
                 m_MainAdsMediationType = adsMediationType;
-                admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList =
-                    m_SDKSetup.admobAdsSetup.InterstitialAdUnitIDList;
+                admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList = m_SDKSetup.admobAdsSetup.InterstitialAdUnitIDList;
             }
             else
             {
                 admobMediationController.m_AdmobAdSetup.InterstitialAdUnitIDList = new List<string>();
             }
-            
             admobMediationController.m_AdmobAdSetup.RewardedAdUnitIDList = m_SDKSetup.rewardedAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.RewardedAdUnitIDList : new List<string>();
 
             {
@@ -308,13 +306,16 @@ namespace SDK
                     m_SDKSetup.collapsibleBannerAdsMediationType == adsMediationType
                         ? m_SDKSetup.admobAdsSetup.CollapsibleBannerAdUnitIDList
                         : new List<string>();
-                admobMediationController.IsCollapsibleBannerShowingOnStart =
-                    m_SDKSetup.isCollapsibleBannerShowingOnStart;
+                admobMediationController.IsCollapsibleBannerShowingOnStart = m_SDKSetup.isCollapsibleBannerShowingOnStart;
+                IsCollapsibleBannerAutoClose = m_SDKSetup.isCollapsibleBannerAutoClose;
+                m_CollapsibleBannerAutoCloseTime = m_SDKSetup.autoCloseTime;
+
+                IsCollapsibleBannerAutoRefresh = m_SDKSetup.isCollapsibleBannerAutoRefresh;
+                m_CollapsibleBannerAutoRefreshTime = m_SDKSetup.autoRefreshTime;
+                
                 admobMediationController.m_CollapsibleBannerPosition = m_SDKSetup.collapsibleBannerAdsPosition;
             }
-            
             admobMediationController.m_AdmobAdSetup.MrecAdUnitIDList = m_SDKSetup.mrecAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.MrecAdUnitIDList : new List<string>();
-            
             admobMediationController.m_AdmobAdSetup.AppOpenAdUnitIDList = m_SDKSetup.appOpenAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.AppOpenAdUnitIDList : new List<string>();
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(admobMediationController);
@@ -543,12 +544,17 @@ namespace SDK
 
         private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
         private bool m_IsCollapsibleBannerExpanded;
-        private float m_CollapsibleBannerShowingTime;
-        private float m_CollapsibleBannerRefreshTime;
-        private bool m_IsAutoCloseCollapsibleBanner;
+        
+        private bool IsCollapsibleBannerAutoRefresh;
+        private float m_CollapsibleBannerAutoRefreshTime;
+        private float m_CollapsibleBannerRefreshTimeCounter;
+        
+        private bool IsCollapsibleBannerAutoClose;
+        private float m_CollapsibleBannerAutoCloseTime = 20;
+        private float m_CollapsibleBannerCloseTimeCounter;
+        
         private UnityAction m_CollapsibleBannerCloseCallback;
-        private const float collapsible_banner_max_show_time = 20;
-        private const float collapsible_banner_max_refresh_time = 30;
+        
         private void SetupCollapsibleBannerAds(AdsMediationType adsMediationType)
         {
             StartCoroutine(coDelayInitCollapsibleBannerAds(adsMediationType));
@@ -579,23 +585,29 @@ namespace SDK
 
         private void UpdateCollapsibleBanner(float dt)
         {
-            if (m_CollapsibleBannerShowingTime >0)
+            if (IsCollapsibleBannerAutoClose)
             {
-                m_CollapsibleBannerShowingTime -= dt; 
-                if(m_CollapsibleBannerShowingTime <= 0 && m_IsAutoCloseCollapsibleBanner)
+                if (m_CollapsibleBannerCloseTimeCounter > 0)
                 {
-                    HideCollapsibleBannerAds();
-                    m_CollapsibleBannerCloseCallback?.Invoke();
-                }
+                    m_CollapsibleBannerCloseTimeCounter -= dt; 
+                    if(m_CollapsibleBannerCloseTimeCounter <= 0)
+                    {
+                        HideCollapsibleBannerAds();
+                        m_CollapsibleBannerCloseCallback?.Invoke();
+                    }
+                }    
             }
 
-            if (m_CollapsibleBannerRefreshTime > 0)
+            if (IsCollapsibleBannerAutoRefresh)
             {
-                m_CollapsibleBannerRefreshTime -= dt;
-                if(m_CollapsibleBannerRefreshTime <= 0)
+                if (m_CollapsibleBannerRefreshTimeCounter > 0)
                 {
-                    RefreshCollapsibleBanner();
-                    m_CollapsibleBannerRefreshTime = 0;
+                    m_CollapsibleBannerRefreshTimeCounter -= dt;
+                    if(m_CollapsibleBannerRefreshTimeCounter <= 0)
+                    {
+                        RefreshCollapsibleBanner();
+                        m_CollapsibleBannerRefreshTimeCounter = 0;
+                    }
                 }
             }
         }
@@ -614,9 +626,9 @@ namespace SDK
         public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
-            m_IsAutoCloseCollapsibleBanner = isAutoClose;
+            IsCollapsibleBannerAutoClose = isAutoClose;
             m_CollapsibleBannerCloseCallback = closeCallback;
-            m_CollapsibleBannerRefreshTime = 0;
+            m_CollapsibleBannerAutoRefreshTime = 0;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).ShowCollapsibleBannerAds();
         }
 
@@ -638,7 +650,7 @@ namespace SDK
         private void OnCollapsibleBannerLoadedSucess()
         {
             Debug.Log("Collapsible Banner Loaded");
-            m_CollapsibleBannerRefreshTime = collapsible_banner_max_refresh_time;
+            m_CollapsibleBannerRefreshTimeCounter = m_CollapsibleBannerAutoRefreshTime;
         }
 
         private void OnCollapsibleBannerLoadedFail()
@@ -650,19 +662,19 @@ namespace SDK
         {
             Debug.Log("Collapsible Banner Expanded");
             m_IsCollapsibleBannerExpanded = true;
-            m_CollapsibleBannerRefreshTime = 0;
+            m_CollapsibleBannerRefreshTimeCounter = 0;
         }
         
         private void OnCollapsibleBannerCollapsed()
         {
             Debug.Log("Collapsible Banner Collapsed");
             m_IsCollapsibleBannerExpanded = false;
-            m_CollapsibleBannerShowingTime = collapsible_banner_max_show_time;
-            m_CollapsibleBannerRefreshTime = collapsible_banner_max_refresh_time;
+            m_CollapsibleBannerCloseTimeCounter = m_CollapsibleBannerAutoCloseTime;
+            m_CollapsibleBannerRefreshTimeCounter = m_CollapsibleBannerAutoRefreshTime;
         }
         public bool IsCollapsibleBannerShowingTimeOut()
         {
-            return m_CollapsibleBannerShowingTime <= 0;
+            return m_CollapsibleBannerCloseTimeCounter <= 0;
         }
         #endregion
 
