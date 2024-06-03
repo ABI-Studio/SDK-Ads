@@ -87,7 +87,7 @@ public class PanelAdsTest : MonoBehaviour
         {
             m_TextBannerStatus.text = AdsManager.Instance.IsBannerLoaded() ? "Banner Ad Loaded" : "Banner Ad Not Loaded";
         }
-        if (AdsManager.Instance.IsCollapsibleBannerShowing())
+        if (AdsManager.Instance.IsCollapsibleBannerExpended())
         {
             m_TextCollapsibleBannerStatus.text = "Collapsible Banner Ad Showing";
         }

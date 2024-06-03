@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.Events;
 using Firebase.RemoteConfig;
+using UnityEditor;
 using UnityEngine.Serialization;
 
 namespace SDK
@@ -24,14 +25,6 @@ namespace SDK
         MREC,
         APP_OPEN,
         COLLAPSIBLE_BANNER
-    }
-
-    public enum WatchVideoRewardType
-    {
-        NONE,
-        X2CLAIM,
-        UNLOCKITEM,
-        TEST_ADS
     }
 
     [ScriptOrder(-99)]
@@ -246,6 +239,7 @@ namespace SDK
 
         private void UpdateMaxMediation()
         {
+#if UNITY_AD_MAX
             const AdsMediationType adsMediationType = AdsMediationType.MAX;
             MaxMediationController maxMediationController = GetAdsMediationController(adsMediationType) as MaxMediationController;
             if (maxMediationController == null) return;
@@ -259,9 +253,9 @@ namespace SDK
             maxMediationController.m_MaxAdConfig.RewardedAdUnitID = m_SDKSetup.rewardedAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.RewardedAdUnitID : "";
             
             maxMediationController.m_MaxAdConfig.BannerAdUnitID = m_SDKSetup.bannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.BannerAdUnitID : "";
-            #if UNITY_AD_MAX
+#if UNITY_AD_MAX
             maxMediationController.m_BannerPosition = m_SDKSetup.maxBannerAdsPosition;
-            #endif
+#endif
             
             maxMediationController.m_MaxAdConfig.CollapsibleBannerAdUnitID = m_SDKSetup.collapsibleBannerAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.CollapsibleBannerAdUnitID : "";
             
@@ -270,13 +264,15 @@ namespace SDK
             maxMediationController.m_MaxAdConfig.AppOpenAdUnitID = m_SDKSetup.appOpenAdsMediationType == adsMediationType ? m_SDKSetup.maxAdsSetup.AppOpenAdUnitID : "";
             
 #if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(maxMediationController);
+            EditorUtility.SetDirty(maxMediationController);
             Debug.Log("Update Max Mediation Done");
+#endif
 #endif
         }
 
         private void UpdateAdmobMediation()
         {
+#if UNITY_AD_ADMOB
             const AdsMediationType adsMediationType = AdsMediationType.ADMOB;
             AdmobMediationController admobMediationController =
                 GetAdsMediationController(adsMediationType) as AdmobMediationController;
@@ -311,6 +307,7 @@ namespace SDK
                 m_CollapsibleBannerAutoCloseTime = m_SDKSetup.autoCloseTime;
 
                 IsCollapsibleBannerAutoRefresh = m_SDKSetup.isCollapsibleBannerAutoRefresh;
+                IsCollapsibleBannerAutoRefreshExtend = m_SDKSetup.isCollapsibleBannerAutoRefreshExtend;
                 m_CollapsibleBannerAutoRefreshTime = m_SDKSetup.autoRefreshTime;
                 
                 admobMediationController.m_CollapsibleBannerPosition = m_SDKSetup.collapsibleBannerAdsPosition;
@@ -318,8 +315,9 @@ namespace SDK
             admobMediationController.m_AdmobAdSetup.MrecAdUnitIDList = m_SDKSetup.mrecAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.MrecAdUnitIDList : new List<string>();
             admobMediationController.m_AdmobAdSetup.AppOpenAdUnitIDList = m_SDKSetup.appOpenAdsMediationType == adsMediationType ? m_SDKSetup.admobAdsSetup.AppOpenAdUnitIDList : new List<string>();
 #if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(admobMediationController);
+            EditorUtility.SetDirty(admobMediationController);
             Debug.Log("Update Admob Mediation Done");
+#endif
 #endif
         }
 
@@ -364,6 +362,11 @@ namespace SDK
         public void ShowInterstitial(UnityAction closedCallback = null, UnityAction showSuccessCallback = null,
             bool isTracking = true, bool isSkipCapping = false)
         {
+            if (IsCheatAds)
+            {
+                showSuccessCallback?.Invoke();
+                return;
+            }
             if (!isSkipCapping)
             {
                 if (m_InterstitialCappingAdsCooldown > 0) return;
@@ -469,6 +472,7 @@ namespace SDK
         private void SetupBannerAds(AdsMediationType adsMediationType)
         {
             if (adsMediationType != m_SDKSetup.bannerAdsMediationType) return;
+            if (IsCheatAds) return;
             Debug.Log("Setup Banner");
             BannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.BANNER);
             if (!m_SDKSetup.IsActiveAdsType(AdsType.BANNER)) return;
@@ -495,25 +499,26 @@ namespace SDK
         public void ShowBannerAds()
         {
             Debug.Log(("Call Show Banner Ads"));
-            GetSelectedMediation(AdsType.BANNER).ShowBannerAds();
+            GetSelectedMediation(AdsType.BANNER)?.ShowBannerAds();
             m_IsBannerShowing = true;
             BannerCountTime = 0;
         }
 
         public void HideBannerAds()
         {
-            GetSelectedMediation(AdsType.BANNER).HideBannerAds();
+            GetSelectedMediation(AdsType.BANNER)?.HideBannerAds();
             m_IsBannerShowing = false;
         }
 
         public void DestroyBanner()
         {
-            GetSelectedMediation(AdsType.BANNER).DestroyBannerAds();
+            GetSelectedMediation(AdsType.BANNER)?.DestroyBannerAds();
         }
 
         public bool IsBannerLoaded()
         {
-            return GetSelectedMediation(AdsType.BANNER).IsBannerLoaded();
+            AdsMediationController mediation = GetSelectedMediation(AdsType.BANNER);
+            return mediation != null && mediation.IsBannerLoaded();
         }
 
         private void OnBannerLoadedSucess()
@@ -544,8 +549,10 @@ namespace SDK
 
         private AdsConfig CollapsibleBannerAdsConfig => GetAdsConfig(AdsType.COLLAPSIBLE_BANNER);
         private bool m_IsCollapsibleBannerExpanded;
+        private bool m_IsCollapsibleBannerShowing;
         
         private bool IsCollapsibleBannerAutoRefresh;
+        private bool IsCollapsibleBannerAutoRefreshExtend;
         private float m_CollapsibleBannerAutoRefreshTime;
         private float m_CollapsibleBannerRefreshTimeCounter;
         
@@ -572,15 +579,22 @@ namespace SDK
             if (!m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER)) return;
             foreach (AdsMediationController t in CollapsibleBannerAdsConfig.adsMediations)
             {
-                t.InitCollapsibleBannerAds(OnCollapsibleBannerLoadedSucess, OnCollapsibleBannerLoadedFail, OnCollapsibleBannerCollapsed, OnCollapsibleBannerExpanded);
+                t.InitCollapsibleBannerAds(
+                    OnCollapsibleBannerLoadedSucess, OnCollapsibleBannerLoadedFail, OnCollapsibleBannerCollapsed, 
+                    OnCollapsibleBannerExpanded, OnCollapsibleBannerDestroyed, OnCollapsibleBannerHide);
             }
 
             Debug.Log("Setup Banner Done");
         }
 
-        public bool IsCollapsibleBannerShowing()
+        public bool IsCollapsibleBannerExpended()
         {
             return m_IsCollapsibleBannerExpanded;
+        }
+
+        public bool IsCollapsibleBannerShowing()
+        {
+            return m_IsCollapsibleBannerShowing;
         }
 
         private void UpdateCollapsibleBanner(float dt)
@@ -605,7 +619,14 @@ namespace SDK
                     m_CollapsibleBannerRefreshTimeCounter -= dt;
                     if(m_CollapsibleBannerRefreshTimeCounter <= 0)
                     {
-                        RefreshCollapsibleBanner();
+                        if (IsCollapsibleBannerAutoRefreshExtend)
+                        {
+                            ShowCollapsibleBannerAds();
+                        }
+                        else
+                        {
+                            RefreshCollapsibleBanner();
+                        }
                         m_CollapsibleBannerRefreshTimeCounter = 0;
                     }
                 }
@@ -615,62 +636,68 @@ namespace SDK
         public void RequestCollapsibleBanner()
         {
             if (!CollapsibleBannerAdsConfig.isActive) return;
-            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RequestCollapsibleBannerAds(false);
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER)?.RequestCollapsibleBannerAds(false);
         }
-
         public void RefreshCollapsibleBanner()
         {
             if (!CollapsibleBannerAdsConfig.isActive) return;
-            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).RefreshCollapsibleBannerAds();
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER)?.RefreshCollapsibleBannerAds();
         }
         public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
+            if(GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER) == null) return;
             IsCollapsibleBannerAutoClose = isAutoClose;
             m_CollapsibleBannerCloseCallback = closeCallback;
             m_CollapsibleBannerAutoRefreshTime = 0;
             GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).ShowCollapsibleBannerAds();
         }
-
         public void HideCollapsibleBannerAds()
         {
-            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).HideCollapsibleBannerAds();
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER)?.HideCollapsibleBannerAds();
         }
-
         public void DestroyCollapsibleBanner()
         {
-            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).DestroyCollapsibleBannerAds();
+            GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER)?.DestroyCollapsibleBannerAds();
+            m_IsCollapsibleBannerShowing = false;
         }
-
         public bool IsCollapsibleBannerLoaded()
         {
-            return GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER).IsCollapsibleBannerLoaded();
+            AdsMediationController mediation = GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER);
+            return mediation != null && mediation.IsCollapsibleBannerLoaded();
         }
-
         private void OnCollapsibleBannerLoadedSucess()
         {
             Debug.Log("Collapsible Banner Loaded");
             m_CollapsibleBannerRefreshTimeCounter = m_CollapsibleBannerAutoRefreshTime;
         }
-
         private void OnCollapsibleBannerLoadedFail()
         {
             Debug.Log("Collapsible Banner Load Fail");
         }
-
         private void OnCollapsibleBannerExpanded()
         {
             Debug.Log("Collapsible Banner Expanded");
             m_IsCollapsibleBannerExpanded = true;
+            m_IsCollapsibleBannerShowing = true;
             m_CollapsibleBannerRefreshTimeCounter = 0;
         }
-        
         private void OnCollapsibleBannerCollapsed()
         {
             Debug.Log("Collapsible Banner Collapsed");
             m_IsCollapsibleBannerExpanded = false;
             m_CollapsibleBannerCloseTimeCounter = m_CollapsibleBannerAutoCloseTime;
             m_CollapsibleBannerRefreshTimeCounter = m_CollapsibleBannerAutoRefreshTime;
+        }
+        private void OnCollapsibleBannerDestroyed()
+        {
+            Debug.Log("Collapsible Banner Destroyed");
+            m_IsCollapsibleBannerShowing = false;
+        }
+        private void OnCollapsibleBannerHide()
+        {
+            Debug.Log("Collapsible Banner Hide");
+            m_IsCollapsibleBannerShowing = false;
         }
         public bool IsCollapsibleBannerShowingTimeOut()
         {

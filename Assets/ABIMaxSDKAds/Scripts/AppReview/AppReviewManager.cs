@@ -1,4 +1,5 @@
-﻿using Google.Play.Review;
+﻿#if GOOGLE_REVIEW
+using Google.Play.Review;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,3 +54,4 @@ public class AppReviewManager : MonoBehaviour {
         // matter the result, we continue our app flow.
     }
 }
+#endif

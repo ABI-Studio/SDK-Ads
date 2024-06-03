@@ -8,7 +8,7 @@ namespace SDK {
     [ScriptOrder(-98)]
     public class ABIAnalyticsManager : MonoBehaviour {
         private static ABIAnalyticsManager instance;
-        public static ABIAnalyticsManager Instance { get { return instance; } }
+        public static ABIAnalyticsManager Instance => instance;
 
         void Awake() {
             if (instance) {

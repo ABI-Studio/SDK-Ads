@@ -68,13 +68,47 @@ namespace SDK
             }
         }
         
-        [MenuItem("SDK Setup/Setup Ads")]
+        [MenuItem("SDK Setup/Setup Ads Mediation")]
         static void OpenMaxAdConfig()
         {
-            string assetPath = "Assets/ABIMaxSDKAds/Scripts/ScriptableObjects/SDKAdsSetup.asset";
+            string directory = "Assets/ABIAdsConfig/";
+            if (!AssetDatabase.IsValidFolder(directory))
+            {
+                AssetDatabase.CreateFolder("Assets", "ABIAdsConfig");
+            }
+            string assetName = "SDKAdsSetup.asset";
+            string assetPath = $"{directory}{assetName}";
             SDKSetup selectedScriptableObject = AssetDatabase.LoadAssetAtPath<SDKSetup>(assetPath);
+            if (selectedScriptableObject == null)
+            {
+                selectedScriptableObject = ScriptableObject.CreateInstance<SDKSetup>();
+                AssetDatabase.CreateAsset(selectedScriptableObject, assetPath);
+                AssetDatabase.SaveAssets();
+            }
             Selection.activeObject = selectedScriptableObject;
             EditorGUIUtility.PingObject(selectedScriptableObject);
         }
+        
+        [MenuItem("SDK Setup/Watch Video Reward Type")]
+        static void OpenRewardAdsPlacementConfig()
+        {
+            string directory = "Assets/ABIAdsConfig/";
+            if (!AssetDatabase.IsValidFolder(directory))
+            {
+                AssetDatabase.CreateFolder("Assets", "ABIAdsConfig");
+            }
+            string assetName = "RewardAdsPlacementConfig.asset";
+            string assetPath = $"{directory}{assetName}";
+            RewardAdsPlacementConfig selectedScriptableObject = AssetDatabase.LoadAssetAtPath<RewardAdsPlacementConfig>(assetPath);
+            if (selectedScriptableObject == null)
+            {
+                selectedScriptableObject = ScriptableObject.CreateInstance<RewardAdsPlacementConfig>();
+                AssetDatabase.CreateAsset(selectedScriptableObject, assetPath);
+                AssetDatabase.SaveAssets();
+            }
+            Selection.activeObject = selectedScriptableObject;
+            EditorGUIUtility.PingObject(selectedScriptableObject);
+        }
+        
     }
 }

@@ -59,11 +59,15 @@ namespace SDK {
         protected UnityAction m_CollapsibleBannerAdLoadedFailCallback;
         protected UnityAction m_CollapsibleBannerAdsCollapsedCallback;
         protected UnityAction m_CollapsibleBannerAdsExpandedCallback;
-        public virtual void InitCollapsibleBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback) {
+        protected UnityAction m_CollapsibleBannerAdsDestroyedCallback;
+        protected UnityAction m_CollapsibleBannerAdsHideCallback;
+        public virtual void InitCollapsibleBannerAds(UnityAction bannerLoadedSuccessCallback, UnityAction bannerAdLoadedFailCallback, UnityAction bannerAdsCollapsedCallback, UnityAction bannerAdsExpandedCallback, UnityAction bannerAdsDestroyedCallback, UnityAction bannerAdsHideCallback) {
             m_CollapsibleBannerAdLoadedSuccessCallback = bannerLoadedSuccessCallback;
             m_CollapsibleBannerAdLoadedFailCallback = bannerAdLoadedFailCallback;
             m_CollapsibleBannerAdsCollapsedCallback = bannerAdsCollapsedCallback;
             m_CollapsibleBannerAdsExpandedCallback = bannerAdsExpandedCallback;
+            m_CollapsibleBannerAdsDestroyedCallback = bannerAdsDestroyedCallback;
+            m_CollapsibleBannerAdsHideCallback = bannerAdsHideCallback;
         }
         public virtual void RequestCollapsibleBannerAds(bool isOpenOnStart) {
         }
