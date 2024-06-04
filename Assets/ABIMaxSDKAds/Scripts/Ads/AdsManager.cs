@@ -506,6 +506,7 @@ namespace SDK
         public void ShowBannerAds()
         {
             Debug.Log(("Call Show Banner Ads"));
+            if(IsCheatAds)return;
             GetSelectedMediation(AdsType.BANNER)?.ShowBannerAds();
             m_IsBannerShowing = true;
             BannerCountTime = 0;
@@ -580,6 +581,7 @@ namespace SDK
         }
         private void SetupCollapsibleBannerAdMediation(AdsMediationType adsMediationType)
         {
+            if(IsCheatAds)return;
             if (adsMediationType != m_SDKSetup.collapsibleBannerAdsMediationType) return;
             Debug.Log("Setup Banner");
             CollapsibleBannerAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.COLLAPSIBLE_BANNER);
@@ -653,6 +655,7 @@ namespace SDK
         public void ShowCollapsibleBannerAds(bool isAutoClose = false, UnityAction closeCallback = null)
         {
             Debug.Log(("Call Show Collapsible Banner Ads"));
+            if(IsCheatAds)return;
             if(GetSelectedMediation(AdsType.COLLAPSIBLE_BANNER) == null) return;
             IsAutoCloseCollapsibleBanner = isAutoClose;
             m_CollapsibleBannerCloseCallback = closeCallback;
@@ -973,6 +976,7 @@ namespace SDK
 
         private void SetupAppOpenAds(AdsMediationType adsMediationType)
         {
+            if(IsCheatAds)return;
             if (adsMediationType != m_SDKSetup.appOpenAdsMediationType) return;
             Debug.Log("Setup App Open Ads");
             AppOpenAdsConfig.isActive = m_SDKSetup.IsActiveAdsType(AdsType.APP_OPEN);
@@ -989,6 +993,7 @@ namespace SDK
 
         private void ShowAppOpenAds()
         {
+            if (IsCheatAds)return;
             if (IsAppOpenAdsReady())
             {
                 Debug.Log("Start Show App Open Ads");
@@ -1008,6 +1013,7 @@ namespace SDK
         
         private void ForceShowAppOpenAds()
         {
+            if (IsCheatAds) return;
             if (IsAppOpenAdsLoaded())
             {
                 MarkShowingAds(true);
