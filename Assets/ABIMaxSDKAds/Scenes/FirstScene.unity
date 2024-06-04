@@ -3652,7 +3652,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_BannerPosition
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3662,7 +3662,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: IsBannerShowingOnStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3672,7 +3672,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: IsCollapsibleBannerShowingOnStart
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3697,7 +3697,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.rewardedAdUnitID.AndroidID.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3717,7 +3717,7 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.interstitialAdUnitID.AndroidID.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3732,12 +3732,18 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.collapsibleBannerAdUnitID.AndroidID.Array.data[0]
-      value: ca-app-pub-3940256099942544/2014213617
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
+      propertyPath: m_SDKSetup
+      value: 
+      objectReference: {fileID: 11400000, guid: 90798c40d8cb07c4596f12bde082e02f,
+        type: 2}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
       propertyPath: m_MainAdsMediationType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3782,7 +3788,7 @@ PrefabInstance:
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdsConfigs.Array.data[3].adsMediationType
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3802,7 +3808,7 @@ PrefabInstance:
     - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_BannerPosition
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6685391520706141682, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}

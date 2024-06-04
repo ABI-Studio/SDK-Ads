@@ -51,7 +51,7 @@ public partial class SDKSetup : ScriptableObject
         AdsManager adsManager = FindObjectOfType<AdsManager>();
         if (adsManager != null)
         {
-            adsManager.UpdateAdsMediationConfig();
+            adsManager.UpdateAdsMediationConfig(this);
             EditorUtility.SetDirty(adsManager);
             EditorSceneManager.MarkSceneDirty(adsManager.gameObject.scene);
         }
@@ -233,14 +233,14 @@ public partial class SDKSetup
 {
     [BoxGroup("COLLAPSIBLE BANNER")] public AdsMediationType collapsibleBannerAdsMediationType;
     
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition collapsibleBannerAdsPosition;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public AdPosition adsPositionCollapsibleBanner;
     
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerShowingOnStart = false;
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerAutoRefresh = false;
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isCollapsibleBannerAutoRefresh")] public bool isCollapsibleBannerAutoRefreshExtend = false;
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isCollapsibleBannerAutoRefresh")] [Range(20f,60f)]public float autoRefreshTime = 30;
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isCollapsibleBannerAutoClose = false;
-    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isCollapsibleBannerAutoClose")] [Range(20f,60f)]public float autoCloseTime = 30;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isShowingOnStartCollapsibleBanner = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isAutoRefreshCollapsibleBanner = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isAutoRefreshCollapsibleBanner")] public bool isAutoRefreshExtendCollapsibleBanner = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isAutoRefreshCollapsibleBanner")] [Range(20f,60f)]public float autoRefreshTime = 30;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE")] public bool isAutoCloseCollapsibleBanner = false;
+    [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType != AdsMediationType.NONE && isAutoCloseCollapsibleBanner")] [Range(20f,60f)]public float autoCloseTime = 30;
 
     [BoxGroup("COLLAPSIBLE BANNER")][ShowInInspector, ShowIf("@collapsibleBannerAdsMediationType == AdsMediationType.MAX")]
     public string collapsibleBannerAdUnitID_MAX
