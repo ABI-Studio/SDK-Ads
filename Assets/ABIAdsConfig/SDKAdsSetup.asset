@@ -45,7 +45,8 @@ MonoBehaviour:
       AndroidID: []
   adsMediationType: 1
   interstitialAdsMediationType: 0
-  rewardedAdsMediationType: 0
+  rewardedAdsMediationType: 1
+  IsLinkToRemoveAds: 1
   bannerAdsMediationType: 0
   maxBannerAdsPosition: 0
   admobBannerAdsPosition: 0

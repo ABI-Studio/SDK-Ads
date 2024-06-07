@@ -191,6 +191,7 @@ public partial class SDKSetup
 public partial class SDKSetup
 {
     [BoxGroup("REWARDED")]public AdsMediationType rewardedAdsMediationType;
+    [BoxGroup("REWARDED")][ShowInInspector, ShowIf("@rewardedAdsMediationType != AdsMediationType.NONE")]public bool IsLinkToRemoveAds = true;
     [BoxGroup("REWARDED")][ShowInInspector, ShowIf("@rewardedAdsMediationType == AdsMediationType.MAX")]
     public string rewardedAdUnitID_MAX
     {

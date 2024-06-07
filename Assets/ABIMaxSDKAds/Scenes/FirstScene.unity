@@ -3747,8 +3747,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
+      propertyPath: IsLinkRewardWithRemoveAds
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: IsAutoRefreshCollapsibleBanner
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AutoCloseTimeCollapsibleBanner
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
       propertyPath: m_MRecAdsConfig.adsMediationType
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: m_AutoRefreshTimeCollapsibleBanner
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3759,6 +3779,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AppOpenAdsConfig.adsMediationType
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
+        type: 3}
+      propertyPath: IsAutoRefreshExtendCollapsibleBanner
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3773,7 +3798,7 @@ PrefabInstance:
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdsConfigs.Array.data[0].adsMediationType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
