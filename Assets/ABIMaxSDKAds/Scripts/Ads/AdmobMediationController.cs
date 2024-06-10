@@ -1,13 +1,11 @@
-﻿using GoogleMobileAds.Api;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using GoogleMobileAds.Ump.Api;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
-using static MaxSdkCallbacks;
-
+using GoogleMobileAds.Api;
 //using GoogleMobileAdsMediationTestSuite.Api;
 namespace SDK
 {

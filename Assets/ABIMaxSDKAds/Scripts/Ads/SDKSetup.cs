@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using GoogleMobileAds.Api;
 using SDK;
 using Sirenix.OdinInspector;
-
 using UnityEngine;
 using UnityEngine.Serialization;
 #if UNITY_EDITOR

@@ -4,7 +4,6 @@ using Firebase.RemoteConfig;
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Common;
 using UnityEngine;
-using static MaxSdkCallbacks;
 
 namespace SDK {
     [AddComponentMenu("GoogleMobileAds/Samples/AppOpenAdController")]
