@@ -71,6 +71,7 @@ namespace SDK
         [MenuItem("SDK Setup/Setup Ads Mediation")]
         static void OpenMaxAdConfig()
         {
+            AddDefineSymbol("UNITY_AD_ADMOB");
             string directory = "Assets/ABIAdsConfig/";
             if (!AssetDatabase.IsValidFolder(directory))
             {
@@ -97,6 +98,7 @@ namespace SDK
             {
                 AssetDatabase.CreateFolder("Assets", "ABIAdsConfig");
             }
+            
             string assetName = "RewardAdsPlacementConfig.asset";
             string assetPath = $"{directory}{assetName}";
             RewardAdsPlacementConfig selectedScriptableObject = AssetDatabase.LoadAssetAtPath<RewardAdsPlacementConfig>(assetPath);
@@ -108,6 +110,18 @@ namespace SDK
             }
             Selection.activeObject = selectedScriptableObject;
             EditorGUIUtility.PingObject(selectedScriptableObject);
+        }
+        private static void AddDefineSymbol(string defineSymbol)
+        {
+            string currentDefineSymbols =
+                PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+            string[] defineSymbols = currentDefineSymbols.Split(';');
+            List<string> defineSymbolList = new List<string>(defineSymbols);
+            currentDefineSymbols = string.Join(";", defineSymbolList.ToArray());
+            if (currentDefineSymbols.Contains(defineSymbol)) return;
+            currentDefineSymbols += ";" + defineSymbol;
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup,
+                currentDefineSymbols);
         }
         
     }

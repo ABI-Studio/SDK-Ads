@@ -12,6 +12,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
+
 [CreateAssetMenu(fileName = "SDKAdsSetup", menuName = "Tools/SDK Ads Setup", order = 1)]
 public partial class SDKSetup : ScriptableObject
 {
@@ -88,6 +89,25 @@ public partial class SDKSetup : ScriptableObject
             currentDefineSymbols);
     }
 
+    private void AddDefineSymbols(List<string> defineSymbols)
+    {
+        string currentDefineSymbols =
+            PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+        string[] currentDefineSymbolList = currentDefineSymbols.Split(';');
+        List<string> defineSymbolList = new List<string>(currentDefineSymbolList);
+        foreach (var defineSymbol in defineSymbols)
+        {
+            if (!defineSymbolList.Contains(defineSymbol))
+            {
+                defineSymbolList.Add(defineSymbol);
+            }
+        }
+        currentDefineSymbols = string.Join(";", defineSymbolList.ToArray());
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup,
+            currentDefineSymbols);
+        
+    }
+
     private void RemoveDefineSymbol(string defineSymbol)
     {
         string currentDefineSymbols =
@@ -105,25 +125,23 @@ public partial class SDKSetup : ScriptableObject
 
     private void SetupSymbol()
     {
-        string defineSymbol = MAX_MEDIATION_SYMBOL;
-        string removeSymbol = IRONSOURCE_MEDIATION_SYMBOL;
+        List<string> removeSymbols = new List<string> {MAX_MEDIATION_SYMBOL, ADMOB_MEDIATION_SYMBOL, IRONSOURCE_MEDIATION_SYMBOL};
+        List<string> defineSymbols = new List<string>();
         switch (adsMediationType)
         {
             case AdsMediationType.MAX:
             {
-                defineSymbol = MAX_MEDIATION_SYMBOL;
-                removeSymbol = IRONSOURCE_MEDIATION_SYMBOL;
+                defineSymbols.Add(MAX_MEDIATION_SYMBOL);
             }
                 break;
             case AdsMediationType.ADMOB:
             {
-                defineSymbol = ADMOB_MEDIATION_SYMBOL;
+                defineSymbols.Add(ADMOB_MEDIATION_SYMBOL);
             }
                 break;
             case AdsMediationType.IRONSOURCE:
             {
-                defineSymbol = IRONSOURCE_MEDIATION_SYMBOL;
-                removeSymbol = MAX_MEDIATION_SYMBOL;
+                defineSymbols.Add(IRONSOURCE_MEDIATION_SYMBOL);
             }
                 break;
             case AdsMediationType.NONE:
@@ -133,20 +151,68 @@ public partial class SDKSetup : ScriptableObject
                 break;
         }
 
-
-        string currentDefineSymbols =
-            PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-        string[] defineSymbols = currentDefineSymbols.Split(';');
-        List<string> defineSymbolList = new List<string>(defineSymbols);
-        defineSymbolList.Remove(removeSymbol);
-        currentDefineSymbols = string.Join(";", defineSymbolList.ToArray());
-        if (!currentDefineSymbols.Contains(defineSymbol))
+        if (bannerAdsMediationType != AdsMediationType.NONE)
         {
-            currentDefineSymbols += ";" + defineSymbol;
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup,
-                currentDefineSymbols);
+            string symbol = GetSymbolByMediationType(bannerAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
         }
-        
+        if (collapsibleBannerAdsMediationType != AdsMediationType.NONE)
+        {
+            string symbol = GetSymbolByMediationType(collapsibleBannerAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
+        }
+        if (interstitialAdsMediationType != AdsMediationType.NONE)
+        {
+            string symbol = GetSymbolByMediationType(interstitialAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
+        }
+        if (rewardedAdsMediationType != AdsMediationType.NONE)
+        {
+            string symbol = GetSymbolByMediationType(rewardedAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
+        }
+        if (mrecAdsMediationType != AdsMediationType.NONE)
+        {
+            string symbol = GetSymbolByMediationType(mrecAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
+        }
+        if (appOpenAdsMediationType != AdsMediationType.NONE)
+        {
+            string symbol = GetSymbolByMediationType(appOpenAdsMediationType);
+            if (!defineSymbols.Contains(symbol))
+            {
+                defineSymbols.Add(symbol);
+            }
+        }
+
+        int num = 0;
+        while (num<removeSymbols.Count)
+        {
+            if(defineSymbols.Contains(removeSymbols[num]))
+                removeSymbols.RemoveAt(num);
+            else
+                num++;
+        }
+        foreach (var removeSymbol in removeSymbols)
+        {
+            RemoveDefineSymbol(removeSymbol);
+        }
+        AddDefineSymbols(defineSymbols);
         string appsflyerDefineSymbol = "UNITY_APPSFLYER";
         if (IsActiveAppsflyer)
         {
@@ -156,6 +222,16 @@ public partial class SDKSetup : ScriptableObject
         {
             RemoveDefineSymbol(appsflyerDefineSymbol);
         }
+    }
+    private string GetSymbolByMediationType(AdsMediationType adsMediationType)
+    {
+        return adsMediationType switch
+        {
+            AdsMediationType.MAX => MAX_MEDIATION_SYMBOL,
+            AdsMediationType.ADMOB => ADMOB_MEDIATION_SYMBOL,
+            AdsMediationType.IRONSOURCE => IRONSOURCE_MEDIATION_SYMBOL,
+            _ => ""
+        };
     }
 #endif
 }

@@ -3717,12 +3717,12 @@ PrefabInstance:
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.interstitialAdUnitID.AndroidID.Array.size
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdmobAdSetup.interstitialAdUnitID.AndroidID.Array.data[0]
-      value: ca-app-pub-3940256099942544/1033173712
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3744565625552255737, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3743,7 +3743,7 @@ PrefabInstance:
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_MainAdsMediationType
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
@@ -3803,7 +3803,7 @@ PrefabInstance:
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
       propertyPath: m_AdsConfigs.Array.data[1].adsMediationType
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6685391519484111099, guid: 72fec712b86322e4a86060c37a805d29,
         type: 3}
