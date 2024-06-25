@@ -1,6 +1,7 @@
 # Build Note:
 - Bỏ Auto Graphics API, bỏ Vulkan (Project Settings/Other Settings).
 - Đánh dấu cả x86 và x86-64 trong Target Architectures (Project Settings/Other Settings).
+- Import cả FirebaseMessaging
 # Import all package:
 Version:
 - Unity 2021.3 ++
