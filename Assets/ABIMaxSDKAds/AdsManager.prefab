@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsCheatAds: 0
   m_SDKSetup: {fileID: 11400000, guid: 249da539afb5e6d4ebc977a0cfeea499, type: 2}
+  IsLinkRewardWithRemoveAds: 0
   m_MainAdsMediationType: 2
   m_AdsConfigs:
   - adsType: 2
@@ -85,6 +86,11 @@ MonoBehaviour:
   - {fileID: 2822602355967738161}
   - {fileID: 5196014125470475834}
   - {fileID: 4438890547479628587}
+  IsAutoRefreshCollapsibleBanner: 0
+  IsAutoRefreshExtendCollapsibleBanner: 0
+  m_AutoRefreshTimeCollapsibleBanner: 0
+  IsAutoCloseCollapsibleBanner: 0
+  m_AutoCloseTimeCollapsibleBanner: 20
 --- !u!1 &2822602355967738163
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,6 +152,7 @@ MonoBehaviour:
       AndroidID: 
     appOpenAdUnitID:
       AndroidID: 
+  m_BannerPosition: 0
 --- !u!1 &3518085839382689767
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +199,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IsActive: 0
   IsInited: 0
-  m_AndroidAdmobID_AppId: 
   m_AdmobAdSetup:
     interstitialAdUnitID:
       AndroidID:

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using GoogleMobileAds.Ump.Api;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
-using GoogleMobileAds.Api;
-//using GoogleMobileAdsMediationTestSuite.Api;
+
 namespace SDK
 {
+#if UNITY_AD_ADMOB
+    using GoogleMobileAds.Api;
+    using GoogleMobileAds.Ump.Api;
     public class AdmobMediationController : AdsMediationController
     {
         public AdmobAdSetup m_AdmobAdSetup;
@@ -500,7 +501,7 @@ namespace SDK
 
         #region Rewarded Ads
 
-        public override void InitRewardVideoAd(UnityAction videoClosed, UnityAction videoLoadSuccess,
+        public override void InitRewardVideoAd(UnityAction<bool> videoClosed, UnityAction videoLoadSuccess,
             UnityAction videoLoadFailed, UnityAction videoStart)
         {
             base.InitRewardVideoAd(videoClosed, videoLoadSuccess, videoLoadFailed, videoStart);
@@ -589,7 +590,10 @@ namespace SDK
 
             if (m_RewardedVideoCloseCallback != null)
             {
-                EventManager.AddEventNextFrame(m_RewardedVideoCloseCallback);
+                EventManager.AddEventNextFrame(() =>
+                {
+                  m_RewardedVideoCloseCallback.Invoke(m_IsWatchSuccess);  
+                });
             }
         }
 
@@ -870,12 +874,10 @@ namespace SDK
         {
             m_InterstitialAds?.Destroy();
         }
-
         public override AdsMediationType GetAdsMediationType()
         {
             return AdsMediationType.ADMOB;
         }
-
         public override bool IsActiveAdsType(AdsType adsType)
         {
             if (!m_IsActive) return false;
@@ -890,7 +892,8 @@ namespace SDK
             };
         }
     }
-
+#endif
+    
     [Serializable]
     public class AdScheduleUnitID
     {
@@ -945,5 +948,4 @@ namespace SDK
             return CurrentPlatformID.Count > 0;
         }
     }
-    
 }

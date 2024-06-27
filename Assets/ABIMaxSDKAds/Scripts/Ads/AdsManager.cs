@@ -763,7 +763,7 @@ namespace SDK
 
         private AdsConfig RewardVideoAdsConfig => GetAdsConfig(AdsType.REWARDED);
         
-        private UnityAction m_RewardedVideoCloseCallback;
+        private UnityAction<bool> m_RewardedVideoCloseCallback;
         private UnityAction m_RewardedVideoLoadSuccessCallback;
         private UnityAction m_RewardedVideoLoadFailedCallback;
         private UnityAction m_RewardedVideoEarnSuccessCallback;
@@ -853,45 +853,29 @@ namespace SDK
 
         private void OnRewardVideoStart()
         {
-            if (m_RewardedVideoShowStartCallback != null)
-            {
-                m_RewardedVideoShowStartCallback();
-            }
-
-            ABIAnalyticsManager.Instance.TrackAdsReward_StartShow();
+            m_RewardedVideoShowStartCallback?.Invoke();
             MarkShowingAds(true);
+            ABIAnalyticsManager.Instance.TrackAdsReward_StartShow();
         }
 
         private void OnRewardVideoShowFail()
         {
-            if (m_RewardedVideoShowFailCallback != null)
-            {
-                m_RewardedVideoShowFailCallback();
-            }
-
+            m_RewardedVideoShowFailCallback?.Invoke();
             ABIAnalyticsManager.Instance.TrackAdsReward_ShowFail();
         }
 
-        private void OnRewardVideoClosed()
+        private void OnRewardVideoClosed(bool isWatchedSuccess)
         {
             ResetAdsInterstitialCappingTime();
             RequestRewardVideo();
-            if (m_RewardedVideoCloseCallback != null)
-            {
-                m_RewardedVideoCloseCallback();
-            }
-
+            m_RewardedVideoCloseCallback?.Invoke(isWatchedSuccess);
             MarkShowingAds(false);
         }
 
         private void OnRewardVideoLoadSuccess()
         {
             RewardVideoAdsConfig.RefreshLoadAds();
-            if (m_RewardedVideoLoadSuccessCallback != null)
-            {
-                m_RewardedVideoLoadSuccessCallback();
-            }
-
+            m_RewardedVideoLoadSuccessCallback?.Invoke();
             ABIAnalyticsManager.Instance.TrackAdsReward_LoadSuccess();
         }
 
@@ -899,10 +883,7 @@ namespace SDK
         {
             ResetAdsLoadingCooldown();
             RewardVideoAdsConfig.MarkReloadFail();
-            if (m_RewardedVideoLoadFailedCallback != null)
-            {
-                m_RewardedVideoLoadFailedCallback();
-            }
+            m_RewardedVideoLoadFailedCallback?.Invoke();
         }
 
         public bool IsReadyToShowRewardVideo()

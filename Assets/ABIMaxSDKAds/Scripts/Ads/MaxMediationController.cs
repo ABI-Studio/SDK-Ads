@@ -93,7 +93,7 @@ namespace SDK {
         #endregion
 
         #region Rewards Video
-        public override void InitRewardVideoAd(UnityAction videoClosed, UnityAction videoLoadSuccess, UnityAction videoLoadFailed, UnityAction videoStart) {
+        public override void InitRewardVideoAd(UnityAction<bool> videoClosed, UnityAction videoLoadSuccess, UnityAction videoLoadFailed, UnityAction videoStart) {
             base.InitRewardVideoAd(videoClosed, videoLoadSuccess, videoLoadFailed, videoStart);
 
             Debug.Log("Init MAX RewardedVideoAd");
@@ -170,7 +170,6 @@ namespace SDK {
                         EventManager.AddEventNextFrame(m_RewardedVideoEarnSuccessCallback);
                         m_RewardedVideoEarnSuccessCallback = null;
                     }
-
                     break;
                 }
             }
@@ -182,7 +181,7 @@ namespace SDK {
                 m_RewardedVideoEarnSuccessCallback = null;
             }
 
-            m_RewardedVideoCloseCallback?.Invoke();
+            m_RewardedVideoCloseCallback?.Invoke(m_IsWatchSuccess);
         }
         void Rewarded_OnAdStartedEvent(string adUnitID, MaxSdkBase.AdInfo adInfo) {
             Debug.Log("unity-script: I got RewardedVideoAdStartedEvent");

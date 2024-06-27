@@ -108,13 +108,13 @@ namespace SDK {
         #endregion
 
         #region Reward Ads
-        protected UnityAction m_RewardedVideoCloseCallback;
+        protected UnityAction<bool> m_RewardedVideoCloseCallback;
         protected UnityAction m_RewardedVideoLoadSuccessCallback;
         protected UnityAction m_RewardedVideoLoadFailedCallback;
         protected UnityAction m_RewardedVideoEarnSuccessCallback;
         protected UnityAction m_RewardedVideoShowStartCallback;
         protected UnityAction m_RewardedVideoShowFailCallback;
-        public virtual void InitRewardVideoAd(UnityAction videoClosed, UnityAction videoLoadSuccess, UnityAction videoLoadFailed, UnityAction videoStart) {
+        public virtual void InitRewardVideoAd(UnityAction<bool> videoClosed, UnityAction videoLoadSuccess, UnityAction videoLoadFailed, UnityAction videoStart) {
             m_RewardedVideoCloseCallback = videoClosed;
             m_RewardedVideoLoadSuccessCallback = videoLoadSuccess;
             m_RewardedVideoLoadFailedCallback = videoLoadFailed;
