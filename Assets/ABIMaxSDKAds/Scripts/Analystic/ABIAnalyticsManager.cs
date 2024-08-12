@@ -22,17 +22,18 @@ namespace SDK {
         #region Ads Tracking
 
         #region Revenue
-        public const string key_ad_rewarded_revenue = "ad_rewarded_revenue";
-        public const string key_ad_rewarded_count = "ad_rewarded_count";
-        public const string key_ad_inters_revenue = "ad_inters_revenue";
-        public const string key_ad_inters_count = "ad_inters_count";
 
-        public const string ad_inters_show_count = "ad_inters_show_count_";
-        public const string ad_rewarded_show_count = "ad_rewarded_show_count_";
+        private const string key_ad_rewarded_revenue = "ad_rewarded_revenue";
+        private const string key_ad_rewarded_count = "ad_rewarded_count";
+        private const string key_ad_inters_revenue = "ad_inters_revenue";
+        private const string key_ad_inters_count = "ad_inters_count";
+
+        private const string ad_inters_show_count = "ad_inters_show_count_";
+        private const string ad_rewarded_show_count = "ad_rewarded_show_count_";
 
         public static void TrackAdImpression(ImpressionData impressionData) {
             double revenue = impressionData.ad_revenue;
-            var impressionParameters = new[] {
+            Parameter[] impressionParameters = new[] {
                 new Parameter("ad_platform", impressionData.ad_platform),
                 new Parameter("ad_source", impressionData.ad_source),
                 new Parameter("ad_unit_name", impressionData.ad_unit_name),
@@ -41,13 +42,18 @@ namespace SDK {
                 new Parameter("currency", "USD"), // All AppLovin revenue is sent in USD
             };
             ABIFirebaseManager.Instance.LogFirebaseEvent("ad_impression", impressionParameters);
-            ABIFirebaseManager.Instance.LogFirebaseEvent("ad_impression_abi", impressionParameters);
-
-            EventManager.AddEventNextFrame(() => {
+            
+            EventManager.AddEventWithDelay(() =>
+            {
+                ABIFirebaseManager.Instance.LogFirebaseEvent("ad_impression_abi", impressionParameters);    
+            }, 0.1f);
+            EventManager.AddEventWithDelay(() =>
+            {
                 TrackLocalAdImpression(impressionData.ad_format, impressionData);
-            });
+            }, 0.2f);
         }
-        public static void TrackLocalAdImpression(string adFormat, ImpressionData impressionData) {
+
+        private static void TrackLocalAdImpression(string adFormat, ImpressionData impressionData) {
             List<int> trackPoints = new List<int> { 5, 15, 30, 50, 100 };
             switch (adFormat) {
                 case "REWARDED": {
@@ -102,11 +108,12 @@ namespace SDK {
         #endregion
 
         #region Rewarded Ads
-        public const string ads_reward_complete = "ads_reward_complete";
-        public const string ads_reward_click = "ads_reward_click";
-        public const string ads_reward_show = "ads_reward_show";
-        public const string ads_reward_fail = "ads_reward_fail";
-        public const string ads_reward_loadsuccess = "ads_reward_loadsuccess";
+
+        private const string ads_reward_complete = "ads_reward_complete";
+        private const string ads_reward_click = "ads_reward_click";
+        private const string ads_reward_show = "ads_reward_show";
+        private const string ads_reward_fail = "ads_reward_fail";
+        private const string ads_reward_loadsuccess = "ads_reward_loadsuccess";
 
         public void TrackAdsReward_ClickOnButton() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ads_reward_click);
@@ -138,10 +145,11 @@ namespace SDK {
         #endregion
 
         #region Interstitial Ads
-        public const string ad_inter_fail = "ad_inter_fail";
-        public const string ad_inter_load = "ad_inter_load";
-        public const string ad_inter_show = "ad_inter_show";
-        public const string ad_inter_click = "ad_inter_click";
+
+        private const string ad_inter_fail = "ad_inter_fail";
+        private const string ad_inter_load = "ad_inter_load";
+        private const string ad_inter_show = "ad_inter_show";
+        private const string ad_inter_click = "ad_inter_click";
 
         public void TrackAdsInterstitial_LoadedSuccess() {
             ABIFirebaseManager.Instance.LogFirebaseEvent(ad_inter_load);
