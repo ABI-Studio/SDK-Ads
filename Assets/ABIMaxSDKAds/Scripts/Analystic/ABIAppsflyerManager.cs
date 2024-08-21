@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 #if UNITY_APPSFLYER
@@ -127,14 +128,16 @@ namespace SDK
 
         public static void TrackAppsflyerAdRevenue(ImpressionData impressionData)
         {
-            Dictionary<string,string> eventValue = new Dictionary<string, string>();
-            eventValue.Add("ad_platform","applovin");
-            eventValue.Add("ad_source", impressionData.ad_source);
-            eventValue.Add("ad_unit_name", impressionData.ad_unit_name);
-            eventValue.Add("ad_format", impressionData.ad_format);
-            eventValue.Add("placement","");
-            eventValue.Add("value", impressionData.ad_revenue.ToString());
-            eventValue.Add("currency", impressionData.ad_currency);
+            Dictionary<string,string> eventValue = new Dictionary<string, string>
+            {
+                { "ad_platform", "applovin" },
+                { "ad_source", impressionData.ad_source },
+                { "ad_unit_name", impressionData.ad_unit_name },
+                { "ad_format", impressionData.ad_format },
+                { "placement", "" },
+                { "value", impressionData.ad_revenue.ToString(CultureInfo.InvariantCulture) },
+                { "currency", impressionData.ad_currency }
+            };
             AppsFlyerAdRevenue.logAdRevenue(impressionData.ad_source, 
                 AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeApplovinMax,
                 impressionData.ad_revenue,
